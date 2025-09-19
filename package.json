@@ -1,9 +1,9 @@
 {
   "name": "nalkalounart",
+  "homepage": "https://aliciazhao.github.io/Nalkaloun/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://aliciazhao.github.io/Nalkaloun/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
