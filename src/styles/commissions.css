@@ -1,0 +1,362 @@
+:root{
+  --ink:#407dff;
+  --shadow: 0 10px 30px rgba(0,0,0,.12);
+  --shadow-color: rgba(64,125,255,.18);
+
+  /* triangle shadow knobs */
+  --shadow-drop: 3%;    /* how far below the sticky (translateY) */
+  --shadow-stop: 100%;   /* how far across the bottom (x) */
+  --shadow-lift: 8%;    /* lift the bottom tip upward */
+
+  /* Sheet size + inner padding */
+  --notepad-max: 1280px;
+  --pad-desktop: 19px;
+  --pad-mobile: 60px;
+
+  /* Frame thickness */
+  --frame: 8px;
+
+  /*background colors*/
+  --polka-size: 30px;            /* distance between dots */
+  --polka-dot: 28%;              /* dot radius as % of the cell */
+  --polka-accent: rgba(0,0,0,.08);  /* dot color */
+  --polka-fade-inner: 30%;       /* white center radius */
+  --polka-fade-outer: 82%;       /* where fade ends */
+}
+
+/* smooth snapping between sheets */
+html{
+  scroll-snap-type: y proximity;
+  scroll-behavior: smooth;
+}
+body{ overscroll-behavior-y: contain; 
+  scroll-snap-type: y proximity;
+  scroll-padding-top: calc(var(--frame) + 24px);
+
+}
+
+*,
+*::before,
+*::after{ box-sizing:border-box }
+
+.commissions-canvas{
+  position: relative;
+  min-height: 100svh;
+  padding: 0 16px 64px;
+  overflow-x: clip;
+}
+
+.commissions-canvas::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;                /* behind your sheets */
+  pointer-events: none;
+  background:
+    radial-gradient(var(--polka-accent) var(--polka-dot), transparent calc(var(--polka-dot) + 1px)) 0 0 /
+      var(--polka-size) var(--polka-size),
+    radial-gradient(var(--polka-accent) var(--polka-dot), transparent calc(var(--polka-dot) + 1px))
+      calc(var(--polka-size)/2) calc(var(--polka-size)/2) /
+      var(--polka-size) var(--polka-size),
+    #fff;                     /* base */
+
+  /* fade the pattern out toward the middle */
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    rgba(0,0,0,0) var(--polka-fade-inner),   /* transparent center */
+    rgba(0,0,0,1) var(--polka-fade-outer)    /* solid edges */
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    rgba(0,0,0,0) var(--polka-fade-inner),
+    rgba(0,0,0,1) var(--polka-fade-outer)
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+/* ===== Framed sheet ===== */
+.sheet{
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  scroll-margin-top: calc(var(--frame) + 24px);
+
+  position: relative;
+  width: min(var(--notepad-max), 96vw);
+  margin: 96px auto 64px;
+  align-self: center;
+  background: #fff;
+  border: var(--frame) solid var(--ink);
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.12);
+  overflow: visible;        /* allow décor to poke out */
+  min-height: 80vh;
+}
+
+/* clip the content inside the frame so nothing leaks past the border */
+.sheet-inner{
+  position: relative;
+  overflow: hidden;
+  border-radius: calc(18px - var(--frame));
+}
+
+/* inner padding; right gutter is conditional (when sticky exists) */
+.sheet .notepad-content{
+  position: relative;
+  padding: var(--pad-desktop);
+  z-index: 2;
+}
+.sheet.has-sticky .notepad-content{
+  padding-right: calc(var(--pad-desktop) + var(--sticky-gutter, 0px));
+}
+.sheet:not(.has-sticky) .notepad-content{
+  padding-right: var(--pad-desktop);
+}
+
+.sheet-title{
+  text-align:center;
+  margin: clamp(18px, 2.2vw, 28px) 0 clamp(14px, 1.8vw, 22px);
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+
+/* ===== Binder blocks (top-left) ===== */
+.sheet-binder{
+  position: absolute;
+  top: calc(-1 * var(--frame) - clamp(8px, 1.2vw, 14px));
+  left: clamp(24px, 5vw, 120px);
+  display: flex;
+  gap: clamp(16px, 2.4vw, 28px);
+  z-index: 3;
+  pointer-events: none;
+}
+.sheet-binder span{
+  width: clamp(16px, 1.6vw, 22px);
+  height: clamp(28px, 2.8vw, 36px);
+  background: var(--ink);
+  border-radius: 4px;
+  box-shadow: 0 6px 0 -2px rgba(0,0,0,.08);
+}
+
+/* ===== Pink tab on the rail ===== */
+.sheet-tab{
+  position: absolute;
+  top: calc(-1 * var(--frame) - clamp(16px, 2.4vw, 24px));
+  left: clamp(280px, 28vw, 520px);
+  width: clamp(120px, 16vw, 240px);
+  height: clamp(18px, 2.6vw, 32px);
+  background: #f7a8c9;
+  border: var(--frame) solid var(--ink);
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  z-index: 2;
+}
+
+/* ===== Sticky note (image) — right-anchored & width bounded ===== */
+.sheet .sticky-note-wrap.notepad-affix{
+  position: absolute;
+  pointer-events: auto;
+  top: var(--sticky-top, -4.0%);
+  right: clamp(-28px, var(--sticky-right, -2.5%), 8px); /* slight overhang, clamped */
+  left: auto;
+  width: clamp(180px, var(--sticky-w, 26%), 320px);      /* never balloons */
+  transform: rotate(var(--sticky-rot, -1.2deg));
+  z-index: 4;
+  isolation: isolate;   /* for the shadow plate living below */
+}
+.sheet .sticky-note-img{
+  display:block;
+  width:100%;
+  height:auto;
+  pointer-events:none;
+  position: relative;
+  z-index: 1;
+}
+.sheet .sticky-note-content{
+  position:absolute;
+  inset: 14px 16px;
+  line-height:1.2;
+  z-index: 1;
+}
+
+/* ===== Triangle shadow (ONLY when sticky exists; clipped to sheet) ===== */
+.sheet.has-sticky .sheet-inner::before{
+  content:"";
+  position:absolute;
+
+  /* anchor to the sticky’s top-right using the vars we set on .sheet */
+  top:   var(--sticky-top);
+  right: var(--sticky-right);
+
+  /* size relative to sticky; we rotate together via --sticky-rot */
+  width: var(--sticky-w);
+  aspect-ratio: 1 / 1;
+  transform: translateY(var(--shadow-drop)) rotate(var(--sticky-rot));
+  transform-origin: top right;
+
+  background: var(--shadow-color);
+
+  /* top-left -> bottom-left -> bottom tip (slanted up), then back */
+  clip-path: polygon(
+    0 0,
+    0 100%,
+    var(--shadow-stop) calc(100% - var(--shadow-lift))
+    
+  );
+
+  z-index: 1;           /* under sticky (z=4) but above paper content */
+  pointer-events: none;
+}
+/* No shadow when there’s no sticky */
+.sheet:not(.has-sticky) .sheet-inner::before{ content:none; }
+
+/* ===== Content ===== */
+.panel__header{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin-bottom:18px;
+}
+.panel__header h2{ margin:0 }
+.status{ white-space:nowrap }
+
+/* Samples | Description */
+.panel__grid{
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;   /* keep your original ratios */
+  gap: 40px;
+  align-items: start;
+}
+
+.panel--aligned{
+  grid-template-columns: minmax(520px, 54%) 1fr;   /* left behaves like the mock */
+  gap: clamp(28px, 3.2vw, 48px);
+  align-items: start;
+}
+.samples{ position: relative; }
+
+/* Samples grid (2x2) */
+.samples__grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 1.6vw, 24px);
+}
+.commission-card{
+  margin:0; border-radius:10px; overflow:hidden;
+  border:2px solid #e9ecff; background:#fafbff;
+}
+.commission-card img{
+  display:block; width:100%; height:100%;
+  aspect-ratio:1/1; object-fit:cover;
+  transition:transform .25s ease;
+}
+.commission-card:hover img{ transform:scale(1.03) }
+
+.list{ padding-left:1rem; margin:0 0 14px }
+.list li{ margin:6px 0 }
+.list .divider{ list-style:none; margin:12px 0; height:1px; background:#e6e8f9 }
+.rule{ border:0; height:1px; background:#dfe3ff; margin:14px 0 }
+
+.info{ font-size: clamp(14px, 1.02vw, 16px); line-height: 1.45; }
+.info__heading{
+  margin: clamp(14px, 1.6vw, 18px) 0 6px;
+  font-weight: 900;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+.info__muted{ opacity: .85; margin: 0 0 10px; }
+
+/* Blue divider like the reference */
+.info__divider{
+  height: 4px;
+  width: 82%;
+  max-width: 560px;
+  background: var(--ink);
+  margin: clamp(14px, 1.6vw, 18px) 0 clamp(10px, 1.2vw, 14px);
+}
+
+/* Lists that mimic “+ …” and “* …” bullets */
+.plus-list,
+.star-list{ list-style: none; margin: 0 0 14px; padding: 0; }
+.plus-list li,
+.star-list li{ margin: 6px 0; position: relative; padding-left: 18px; }
+.plus-list li::before{
+  content: "+"; position: absolute; left: 0; top: 0; font-weight: 800;
+}
+.star-list li::before{
+  content: "*"; position: absolute; left: 0; top: 0; font-weight: 800;
+  transform: translateY(1px);
+}
+
+/* Mobile: stack columns, keep generous padding */
+@media (max-width: 1024px){
+  .panel--aligned{ grid-template-columns: 1fr; gap: 22px; }
+  .sheet-title{ margin-top: 22px; }
+}
+
+@media (max-width: 620px){
+  /* keep samples as a 2-wide grid on small phones (you had this inside @media) */
+  .samples__grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(16px, 1.6vw, 24px);
+  }
+}
+
+/* ===== Responsive bounds so sticky never explodes ===== */
+@media (max-width: 650px){
+  .sheet .sticky-note-wrap.notepad-affix{
+    width: clamp(170px, 28vw, 300px);
+  }
+}
+@media (max-width: 650px){
+  .panel__grid{ grid-template-columns:1fr; gap:22px; }  /* description under samples */
+  .sheet .notepad-content{
+    padding: 40px;
+    padding-right: calc(40px + var(--sticky-gutter, 0px));
+  }
+  .sheet .sticky-note-wrap.notepad-affix{
+    right: clamp(0px, 2vw, 16px);
+    width: clamp(160px, 30vw, 260px);
+  }
+  .sheet .sticky-note-content{ inset:12px 14px; }
+}
+@media (max-width: 840px){
+  .sheet .sticky-note-wrap.notepad-affix{
+    width: clamp(150px, 34vw, 240px);
+  }
+}
+@media (max-width: 620px){
+   .samples__grid{
+    display: grid;                                       /* <— missing line */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(16px, 1.6vw, 24px);
+    }
+  .sheet .notepad-content{
+    padding: var(--pad-mobile);
+    padding-right: calc(var(--pad-mobile) + var(--sticky-gutter, 0px));
+  }
+  /* keep layout simple on phones */
+  .sheet .sticky-note-wrap.notepad-affix{
+    position: static;
+    margin: 8px auto 0;
+    width: min(92%, 340px);
+    transform: rotate(var(--sticky-rot, -1.2deg));
+  }
+  /* and hide the inner-only triangle shadow at this size */
+  .sheet.has-sticky .sheet-inner::before{ content:none; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .commission-card img{ transition:none }
+}
+
+/* Safety: remove any lingering wire-clip styles */
+.wire-clip-img{ display:none !important; }
+
+.sheet{
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
