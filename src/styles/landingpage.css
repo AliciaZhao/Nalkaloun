@@ -285,24 +285,32 @@ a svg, button svg { width:1rem; height:1rem; flex:none; }
 .cta.diag-swipe[data-accent="pink"]::before{ background:linear-gradient(120deg,#f472b6,#ec4899); }
 
 /* =============== MOBILE LAYOUT FIX (≤ 640px) =============== */
+/* ========== MOBILE (≤640px) CLEAN DROP-IN ========== */
 @media (max-width: 640px){
 
-  /* safer viewport + scrolling */
+  /* Always allow scroll */
   html, body {
     height: auto !important;
     min-height: 100% !important;
-    margin: 0;
     overflow-y: auto !important;
-    overflow-x: hidden !important; /* no sideways scroll */
+    overflow-x: hidden !important;
+    margin: 0;
+    background: #0f172a; /* true underlay color */
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
     background:#0f172a;
+    z-index:-1; pointer-events:none;
   }
 
-  /* Keep a small hero; just one image */
+  /* Hero: only first image, no snap */
   .landing-hero-grid{
     grid-template-columns: 1fr !important;
-    scroll-snap-type: none !important;  /* disable snap on mobile */
-    height: auto !important;            /* relax fixed vh */
-    min-height: 40dvh;                  /* still fill some screen */
+    scroll-snap-type: none !important;
+    height: auto !important;
+    min-height: 45svh; /* stable size, safe vh */
+    background:#0f172a;
   }
   .landing-hero-panel{ display:block !important; }
   .landing-hero-panel:nth-child(n+2){ display:none !important; }
@@ -311,55 +319,66 @@ a svg, button svg { width:1rem; height:1rem; flex:none; }
     object-position: center top;
   }
 
-  /* Stronger gradient overlay */
-  .landing-hero-panel::after{
-    background: linear-gradient(to bottom,
-      rgba(0,0,0,0.10) 0%,
-      rgba(0,0,0,0.45) 55%,
-      rgba(0,0,0,0.70) 100%);
-    opacity: 1 !important;
-  }
+  /* Kill hero collapse/dim effect */
+  .landing-hero-panel::after,
+  .landing-hero-panel.dimmed::after{ opacity: 0 !important; }
 
-  /* Band just flows under hero */
+  /* Band flows normally under hero */
   .landing-band{
     min-height: auto !important;
-    padding: 16px clamp(14px, 4vw, 24px) 32px;
+    padding: 16px clamp(14px, 4vw, 24px) max(32px, env(safe-area-inset-bottom));
+    background:#0f172a;
   }
 
-  /* Brand/title sizing */
+  /* Brand: static, no animation */
   .brand{
     font-size: clamp(28px, 7.2vw, 36px) !important;
     letter-spacing: .22em;
     line-height: 1.05;
-  }
-  .sub{ font-size: clamp(16px, 4.6vw, 20px); }
-  .blurb{ font-size: clamp(14px, 4.2vw, 18px); }
-
-  /* Disable brand sliding/fading on focus */
-  .is-hero-focused .brand{
     animation: none !important;
     transform: none !important;
   }
+
+  /* Disable collapse behavior (brand + text/buttons never hide) */
+  .is-hero-focused .brand,
   .is-hero-focused .sub,
   .is-hero-focused .blurb,
   .is-hero-focused .support-title,
-  .is-hero-focused .support-row{
+  .is-hero-focused .support-row,
+  .is-hero-focused .cta{
     opacity: 1 !important;
     transform: none !important;
     pointer-events: auto !important;
   }
-  .cta-stack.normal .cta{ opacity:1; transform:none; }
 
-  /* Compact spacing */
-  .cta-stack{ gap: 10px; }
+  /* Text scaling */
+  .sub{ font-size: clamp(16px, 4.6vw, 20px); }
+  .blurb{ font-size: clamp(14px, 4.2vw, 18px); }
+
+  /* CTAs: always visible, no animation */
+  .cta-stack{
+    gap: 10px;
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+  .cta-stack .cta{
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    min-height: 56px;
+  }
+  .cta, .cta *{ transition: none !important; }
+  .cta.diag-swipe::before{ display:none !important; }
+
+  /* Support row compact */
   .support-row{ gap: 10px; }
 
-  /* Optional sticky top nav */
+  /* Sticky nav if you have .topnav */
   .topnav{
     position: sticky;
     top: calc(env(safe-area-inset-top, 0px) + 0px);
     z-index: 100;
-    background: rgba(15, 23, 42, 0.75);
+    background: rgba(15,23,42,0.75);
     -webkit-backdrop-filter: saturate(150%) blur(8px);
     backdrop-filter: saturate(150%) blur(8px);
   }
