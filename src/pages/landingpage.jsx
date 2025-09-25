@@ -146,7 +146,7 @@ export default function Landingpage() {
   }, [selectedId]);
 
   return (
-    <div className={`bg-neutral-900 text-neutral-100 ${selectedId ? "is-hero-focused" : ""}`}>
+    <div className={`landing-page bg-neutral-900 text-neutral-100 ${selectedId ? "is-hero-focused" : ""}`}>
       {/* HERO */}
       <section className="w-full" onClick={() => setSelectedId(null)}>
         <div className="landing-hero-grid">
