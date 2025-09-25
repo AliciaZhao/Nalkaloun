@@ -287,24 +287,31 @@ a svg, button svg { width:1rem; height:1rem; flex:none; }
 /* =============== MOBILE LAYOUT FIX (≤ 640px) =============== */
 @media (max-width: 640px){
 
-  /* Safer viewport on iOS (resizes with the URL bar), and no side bounce */
-  html, body { height: 100%; margin: 0; }
-  body { background:#0f172a; overflow-x:hidden; }
+  /* safer viewport + scrolling */
+  html, body {
+    height: auto !important;
+    min-height: 100% !important;
+    margin: 0;
+    overflow-y: auto !important;
+    overflow-x: hidden !important; /* no sideways scroll */
+    background:#0f172a;
+  }
 
-  /* Keep a small, legible hero; show just one image */
+  /* Keep a small hero; just one image */
   .landing-hero-grid{
     grid-template-columns: 1fr !important;
-    height: 44dvh;               /* dynamic vh so text/nav aren’t pushed off */
-    min-height: 320px;           /* floor so it doesn’t collapse on tiny phones */
+    scroll-snap-type: none !important;  /* disable snap on mobile */
+    height: auto !important;            /* relax fixed vh */
+    min-height: 40dvh;                  /* still fill some screen */
   }
   .landing-hero-panel{ display:block !important; }
-  .landing-hero-panel:nth-child(n+2){ display:none !important; } /* only first */
+  .landing-hero-panel:nth-child(n+2){ display:none !important; }
   .landing-hero-panel img{
     object-fit: cover;
-    object-position: center top;  /* keep faces higher in frame */
+    object-position: center top;
   }
 
-  /* Stronger top-to-bottom gradient to separate text from art */
+  /* Stronger gradient overlay */
   .landing-hero-panel::after{
     background: linear-gradient(to bottom,
       rgba(0,0,0,0.10) 0%,
@@ -313,13 +320,13 @@ a svg, button svg { width:1rem; height:1rem; flex:none; }
     opacity: 1 !important;
   }
 
-  /* The band sits right under the hero, and is tall enough to show name + nav */
+  /* Band just flows under hero */
   .landing-band{
-    min-height: 56dvh;           /* hero 44dvh + band 56dvh ≈ full screen */
-    padding: 16px clamp(14px, 4vw, 24px) 24px;
+    min-height: auto !important;
+    padding: 16px clamp(14px, 4vw, 24px) 32px;
   }
 
-  /* Brand/title sizing—no cutoff */
+  /* Brand/title sizing */
   .brand{
     font-size: clamp(28px, 7.2vw, 36px) !important;
     letter-spacing: .22em;
@@ -328,12 +335,11 @@ a svg, button svg { width:1rem; height:1rem; flex:none; }
   .sub{ font-size: clamp(16px, 4.6vw, 20px); }
   .blurb{ font-size: clamp(14px, 4.2vw, 18px); }
 
-  /* Put the brand back to normal position on mobile (don’t slide off-screen) */
+  /* Disable brand sliding/fading on focus */
   .is-hero-focused .brand{
     animation: none !important;
     transform: none !important;
   }
-  /* And keep the supporting text/buttons visible (no fade-away on focus) */
   .is-hero-focused .sub,
   .is-hero-focused .blurb,
   .is-hero-focused .support-title,
@@ -344,25 +350,17 @@ a svg, button svg { width:1rem; height:1rem; flex:none; }
   }
   .cta-stack.normal .cta{ opacity:1; transform:none; }
 
-  /* Make the CTA stack and social row breathe less */
+  /* Compact spacing */
   .cta-stack{ gap: 10px; }
   .support-row{ gap: 10px; }
 
-  /* Sticky/visible top nav (if you have one) so it’s not hidden off-screen */
+  /* Optional sticky top nav */
   .topnav{
     position: sticky;
     top: calc(env(safe-area-inset-top, 0px) + 0px);
     z-index: 100;
-    background: rgba(15, 23, 42, 0.75); /* same dark as band, translucent */
+    background: rgba(15, 23, 42, 0.75);
     -webkit-backdrop-filter: saturate(150%) blur(8px);
     backdrop-filter: saturate(150%) blur(8px);
-  }
-
-  /* If you keep the slide-to-bottom brand behavior, cap the travel so no white shows */
-  :root{ --brand-shift-y: calc(44dvh - 72px); } /* hero height minus bottom padding */
-  @supports (transform: translateY(0)){
-    .is-hero-focused .brand{
-      transform: translate(var(--brand-shift-x, 0), var(--brand-shift-y)) !important;
-    }
   }
 }

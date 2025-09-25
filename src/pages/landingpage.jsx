@@ -188,7 +188,7 @@ export default function Landingpage() {
               「NALKALOUN」
             </div>
             <div className="sub" aria-hidden={!!selectedId}>Concept Design digital artist</div>
-            <p className="blurb" aria-hidden={!!selectedId}>You can contact me through Twitter or Discord (@nalkaloun)!</p>
+            <p className="blurb" aria-hidden={!!selectedId}>You can contact me through Twitter(@Nalkaloun)!</p>
             <div className="support-title" aria-hidden={!!selectedId}>
               SUPPORT ME BY FOLLOWING<br/>OR DONATING AT:
             </div>

@@ -1,7 +1,7 @@
 :root{
   --ink:#407dff;
   --shadow: 0 10px 30px rgba(0,0,0,.12);
-  --shadow-color: rgba(64,125,255,.18);
+  --shadow-color: rgba(255, 255, 255, 0.18);
 
   /* triangle shadow knobs */
   --shadow-drop: 3%;
@@ -39,6 +39,7 @@ body{
   height: 100%;
   overscroll-behavior-y: contain;
   scroll-padding-top: calc(var(--frame) + 40px);
+  background-color: #dfe3ff;
 }
 
 html, body {
@@ -575,49 +576,51 @@ html, body {
 /* ===========================
    MOBILE FIRST OVERRIDES (≤ 640px)
    =========================== */
+/* ============ MOBILE (≤640px) ============ */
 @media (max-width: 640px){
 
-  /* Smaller tokens on phones */
+  /* Tokens */
   :root{
     --frame: 6px;
-    --pad-mobile: 22px;      /* was 60px; big on phones */
+    --pad-mobile: 22px;
     --canvas-pad: 18px;
-    --sheet-gap: 96px;       /* less vertical gap between sheets */
-    --polka-size: 22px;      /* denser dots so they look right when scaled */
+    --sheet-gap: 96px;
+    --polka-size: 22px;
     --polka-dot: 26%;
     --tab-bump: 8px;
   }
 
-  /* Stop the “jumpy/sensitive” feel on iOS:
-     - don't force 100vh
-     - disable scroll-snap
-     - lighten scroll padding  */
+  /* Ensure page scrolls */
+  html, body{
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    margin: 0;
+    background-color: #dfe3ff;
+  }
+
+  /* Canvas: no snap, sane padding */
   .commissions-canvas{
-    height: auto;                    /* let the page be as tall as content */
-    min-height: 100svh;              /* still fills the initial viewport */
-    scroll-snap-type: none;          /* snap off on phones */
+    height: auto;
+    min-height: 100svh;
+    scroll-snap-type: none;
     scroll-padding-block: 0;
-    scroll-padding-top: 0;
-    scroll-padding-bottom: 0;
-    padding: var(--canvas-pad) 10px; /* tighter side padding */
-    overflow-x: hidden;              /* bullet-proof against sideways scroll */
+    padding: var(--canvas-pad) 10px;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Make the sheet fill width safely */
+  /* Sheet sizing */
   .sheet{
     width: min(100%, 94vw);
     margin: 64px auto;
     border-width: var(--frame);
     border-radius: 16px;
-    min-height: unset;               /* let content define height */
+    min-height: unset;
     scroll-margin-top: 0;
   }
-
-  /* Inside the frame, reduce padding for content */
-  .sheet .notepad-content{
-    padding: var(--pad-mobile);
-  }
+  .sheet .notepad-content{ padding: var(--pad-mobile); }
 
   .sheet-title{
     margin: 12px 0 8px;
@@ -625,17 +628,9 @@ html, body {
     line-height: 1.05;
   }
 
-  /* Binder blocks scale + shift inward so they never cause overflow */
-  .sheet-binder{
-    left: clamp(14px, 6vw, 28px);
-    top: calc(-1 * var(--frame) - 8px);
-    gap: 12px;
-  }
-  .sheet-binder span{
-    width: 14px; height: 24px;
-  }
-
-  /* Pink tab sits nearer the left/top and is narrower on phones */
+  /* Binder + tab */
+  .sheet-binder{ left: clamp(14px, 6vw, 28px); top: calc(-1 * var(--frame) - 8px); gap: 12px; }
+  .sheet-binder span{ width:14px; height:24px; }
   .sheet-tab{
     left: clamp(80px, 24vw, 220px);
     width: clamp(120px, 40vw, 220px);
@@ -644,7 +639,7 @@ html, body {
     top: calc(-1 * var(--frame) - 12px - var(--tab-bump));
   }
 
-  /* Sticky note: shrink & pull inside the frame’s right edge */
+  /* Sticky note tweaks */
   .sheet .sticky-note-wrap.notepad-affix{
     --sticky-w: 42%;
     --sticky-top: -2.5%;
@@ -652,54 +647,39 @@ html, body {
     width: clamp(140px, 42vw, 220px);
     right: clamp(0px, var(--sticky-right), 10px);
   }
-  .sheet .sticky-note-content{
-    inset: 10px 12px;
-    font-size: 20px;
-  }
-
-  /* Triangle shadow stays proportional */
+  .sheet .sticky-note-content{ inset: 10px 12px; font-size: 20px; }
   .sheet.has-sticky .sheet-inner::before{
     transform: translateY(var(--shadow-drop));
     clip-path: polygon(0 0, 0 100%, var(--shadow-stop) calc(100% - var(--shadow-lift)));
   }
 
-  /* Grids: single column stacks for content; samples as 2-up (1-up on tiny screens) */
-  .panel__grid,
-  .panel--aligned{
+  /* Layout stacks */
+  .panel__grid, .panel--aligned{
     grid-template-columns: 1fr;
     gap: 18px;
     align-items: start;
   }
 
+  /* Samples grid + tiny phones */
   .samples__grid{
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
   @media (max-width: 380px){
-    .samples__grid{ grid-template-columns: 1fr; } /* very small phones */
+    .samples__grid{ grid-template-columns: 1fr; }
   }
+  .commission-card img{ aspect-ratio: 1 / 1; object-fit: cover; }
 
-  .commission-card img{
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-  }
-
-  /* Rules/lists/typography scale down a touch */
+  /* Type + rules */
   .rule{ margin: 12px 0; }
   .info{ font-size: clamp(14px, 3.8vw, 16px); }
   .info__heading{ margin: 10px 0 4px; }
   .info__divider{ width: 82%; height: 3px; margin: 12px 0 10px; }
-
   .list{ margin: 0 0 10px; }
   .list li{ margin: 5px 0; }
+  .plus-list li, .star-list li{ padding-left:16px; margin:5px 0; }
 
-  .plus-list li,
-  .star-list li{
-    padding-left: 16px;
-    margin: 5px 0;
-  }
-
-  /* Arrow overlays and page stickers can crowd on phones; soften or hide */
+  /* Decorative bits lighter */
   .sheet-arrow-overlay{ top: calc(100% + 28px); }
   .commissions-canvas::after{
     opacity: .45;
@@ -709,11 +689,63 @@ html, body {
       right 2vw center,
       left  4vw top 14vh;
   }
+
+  /* Hide per-sheet stickies; show inline dock after content */
+  .sheet .sticky-note-wrap.notepad-affix{ display:none !important; }
+  .sheet.has-sticky .sheet-inner::before{ display:none !important; }
+  .sticky-dock-inline{
+    display:block;
+    position: relative;
+    width: min(90vw, var(--sticky-dock-inline-w, 320px));
+    margin: 28px auto 64px;
+    transform: rotate(var(--sticky-dock-rot, -2deg));
+    z-index: 1;
+    scroll-snap-align: none;
+  }
+  .sticky-dock-inline .sticky-note-img{ display:block; width:100%; height:auto; pointer-events:none; }
+  .sticky-dock-inline .sticky-note-content{ position:absolute; inset:10px 12px; font-size: clamp(16px, 4.2vw, 20px); line-height:1.2; }
+
+  /* Carousel: replace samples grid on phones */
+  .carousel{ display:block; position: relative; margin: 8px 0 6px; }
+  .samples__grid{ display:none !important; }
+
+  .carousel__track{
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .carousel__track::-webkit-scrollbar{ display:none; }
+  .carousel__slide{
+    scroll-snap-align: center;
+    width: 100%; padding: 0; margin: 0; border: 0; background: transparent;
+  }
+  .carousel__slide img{
+    display:block; width:100%; height:auto;
+    aspect-ratio: 4/3; object-fit: cover; border-radius: 12px;
+  }
+  .carousel__nav{
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 42px; height: 42px; border-radius: 999px; border: 0;
+    background: rgba(0,0,0,.35); color:#fff; font-size:22px;
+    display:grid; place-items:center; cursor:pointer;
+  }
+  .carousel__nav--prev{ left: 6px; }
+  .carousel__nav--next{ right: 6px; }
+  .carousel__nav:disabled{ opacity: .35; }
+  .carousel__dots{ display:flex; justify-content:center; gap:8px; margin-top:10px; }
+  .carousel__dot{ width:8px; height:8px; border-radius:999px; background:#cfd6ff; border:0; }
+  .carousel__dot.is-active{ background: var(--ink); }
+
+  /* Ensure any viewport-fixed dock is off */
+  .sticky-dock{ display:none !important; }
 }
 
-/* ===========================
-   SMALL TABLET TWEAKS (641–840px)
-   =========================== */
+/* ============ SMALL TABLET (641–840px) ============ */
 @media (min-width: 641px) and (max-width: 840px){
   .commissions-canvas{ scroll-snap-type: none; }
   .sheet{ width: min(100%, 94vw); margin: 84px auto; }
@@ -727,116 +759,5 @@ html, body {
   }
 }
 
-/* ===========================
-   Floating mobile sticky
-   =========================== */
-/* hide dock by default (desktop/tablet) */
+/* Default: hide inline dock unless mobile block shows it */
 .sticky-dock-inline{ display:none; }
-
-/* Phone: hide sheet-attached stickies; show one inline dock AFTER last sheet */
-@media (max-width: 640px){
-  /* kill per-sheet stickies + their triangle shadow */
-  .sheet .sticky-note-wrap.notepad-affix{ display:none !important; }
-  .sheet.has-sticky .sheet-inner::before{ display:none !important; }
-
-  /* in-flow sticky: sits after the last sheet */
-  .sticky-dock-inline{
-    display:block;
-    position: relative;            /* stays in document flow */
-    width: min(90vw, var(--sticky-dock-inline-w, 320px));
-    margin: 28px auto 64px;        /* centered with nice bottom breathing room */
-    transform: rotate(var(--sticky-dock-rot, -2deg));
-    z-index: 1;
-  }
-  .sticky-dock-inline .sticky-note-img{
-    display:block; width:100%; height:auto; pointer-events:none;
-  }
-  .sticky-dock-inline .sticky-note-content{
-    position:absolute; inset:10px 12px;
-    font-size: clamp(16px, 4.2vw, 20px);
-    line-height:1.2;
-  }
-
-  /* optional: stop it from becoming a snap target */
-  .sticky-dock-inline{ scroll-snap-align: none; }
-}
-
-/* Ensure the viewport-fixed dock (if you kept it earlier) is OFF */
-.sticky-dock{ display:none !important; }
-
-.carousel{ display:none; }
-@media (max-width: 640px){
-  .samples__grid{ display:none !important; } /* hide your old grid on phones */
-  .carousel{ display:block; }
-}
-
-/* Carousel shell */
-.carousel{
-  position: relative;
-  margin: 8px 0 6px;
-}
-
-/* Horizontal snap track */
-.carousel__track{
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 100%;      /* 1 slide per viewport width */
-  gap: 10px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;        /* Firefox */
-}
-.carousel__track::-webkit-scrollbar{ display:none; } /* WebKit */
-
-/* Slides */
-.carousel__slide{
-  scroll-snap-align: center;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  background: transparent;
-}
-.carousel__slide img{
-  display:block;
-  width:100%;
-  height:auto;
-  aspect-ratio: 4/3;            /* big hero-ish frame; change to 1/1 if you want */
-  object-fit: cover;
-  border-radius: 12px;
-}
-
-/* Nav arrows (touch-friendly) */
-.carousel__nav{
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 42px; height: 42px;
-  border-radius: 999px;
-  border: 0;
-  background: rgba(0,0,0,.35);
-  color: #fff;
-  font-size: 22px;
-  line-height: 1;
-  display: grid; place-items: center;
-  cursor: pointer;
-}
-.carousel__nav--prev{ left: 6px; }
-.carousel__nav--next{ right: 6px; }
-.carousel__nav:disabled{
-  opacity: .35;
-}
-
-/* Dots */
-.carousel__dots{
-  display:flex; justify-content:center; gap:8px;
-  margin-top: 10px;
-}
-.carousel__dot{
-  width: 8px; height: 8px;
-  border-radius: 999px;
-  background: #cfd6ff;
-  border: 0;
-}
-.carousel__dot.is-active{ background: var(--ink); }
