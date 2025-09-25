@@ -1,0 +1,294 @@
+/* ===== Base theme tokens ===== */
+:root{
+  --accent:#b3e5ff;        /* subtle cyan accent (dots, hovers) */
+  --accent-2:#7cc7ff;
+  --card:#ffffffc9;        /* translucent card */
+  --card-border:#cacaca1a; /* 10% white */
+  --shadow: 0 12px 30px rgba(125, 138, 173, 0.35);
+  --radius: 14px;
+  --maxw: 1040px;
+  --ink:#407dff;
+  --polka-size: 30px;
+  --polka-dot: 28%;
+  --polka-accent: rgba(0,0,0,.08);
+  --polka-fade-inner: 30%;
+  --polka-fade-outer: 82%;
+}
+
+/* Top-level wrapper on the TOS page */
+.tos-canvas{
+  position: relative;
+  min-height: 100svh;
+  padding: 30px 16px;            /* you can tune this */
+  overflow-x: clip;
+  /* keep scrolling enabled even if other pages disable it */
+  height: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Polkadot pattern background */
+.tos-canvas::before{
+  content: "";
+  position: fixed;               /* fixed so it doesn't scroll with content */
+  inset: 0;
+  z-index: -1;                   /* sits behind everything */
+  pointer-events: none;
+  background:
+    radial-gradient(var(--polka-accent) var(--polka-dot), transparent calc(var(--polka-dot) + 1px)) 0 0 / var(--polka-size) var(--polka-size),
+    radial-gradient(var(--polka-accent) var(--polka-dot), transparent calc(var(--polka-dot) + 1px)) calc(var(--polka-size)/2) calc(var(--polka-size)/2) / var(--polka-size) var(--polka-size),
+    #fff;
+  /* vignette fade so dots are soft near edges (optional) */
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,0) var(--polka-fade-inner), rgba(0,0,0,1) var(--polka-fade-outer));
+  mask-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,0) var(--polka-fade-inner), rgba(0,0,0,1) var(--polka-fade-outer));
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;  mask-size: 100% 100%;
+}
+
+/* Optional: page “stickers” layer (comment out if you don’t want it) */
+.tos-canvas::after{
+  content:"";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: -1;                   /* behind cards, above dots if you like */
+  background-image:
+    url("/images/stickers/Logo_Sticker_Nalk.png"),
+    url("/images/stickers/Logo_Sticker_Nalk.png"),
+    url("/images/stickers/Logo_Sticker_Nalk.png");
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-position:
+    left  2vw bottom 6vh,
+    right 3vw center,
+    left  6vw top   18vh;
+  background-size:
+    220px auto,
+    200px auto,
+    160px auto;
+  opacity: 0.9;
+}
+
+/* Phone tweaks: denser dots + smaller stickers */
+@media (max-width: 640px){
+  :root{
+    --polka-size: 22px;
+    --polka-dot: 26%;
+  }
+  .tos-canvas{ padding: 18px 10px; }
+  .tos-canvas::after{
+    opacity: .55;
+    background-size: 120px auto, 110px auto, 100px auto;
+    background-position:
+      left  2vw bottom 4vh,
+      right 2vw center,
+      left  4vw top 14vh;
+  }
+}
+
+/* If some global rule disables scroll, force-enable it here */
+.tos-canvas :is(html, body, #root){
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-y: auto !important;
+  position: static !important;
+}
+
+/* ===== Global reset / typography ===== */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  color:var(--ink-0);
+  font: 400 16px/1.7 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #223 0%, transparent 60%),
+    radial-gradient(1000px 500px at 110% 10%, #15202b 0%, transparent 65%),
+    linear-gradient(180deg, var(--bg-2) 0%, var(--bg-0) 100%);
+  min-height:100dvh;
+}
+
+/* optional tiny speckle without an image */
+body::after{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg, #ffffff03 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(90deg, #ffffff03 0 2px, transparent 2px 4px);
+  mix-blend-mode:overlay;
+}
+
+/* ===== Layout ===== */
+.container{
+  max-width:var(--maxw);
+  margin: 32px auto 80px;
+  padding: 0 20px;
+}
+
+/* ===== Navbar (pill buttons) ===== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 16px;
+  margin: -8px -16px 26px; /* edge-to-edge feel */
+  background: linear-gradient(180deg, #ffffffcc, #fdfdfdcc);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.nav-btn {
+  --pad: 9px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--pad);
+  border-radius: 999px;
+  color: #333; /* dark ink for contrast */
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: .2px;
+  background: linear-gradient(180deg, #ffffff, #f3f7ff);
+  border: 1px solid #dce7ff;
+  box-shadow: inset 0 1px 0 #ffffff,
+              0 2px 6px rgba(0,0,0,0.06);
+  transition: transform .12s ease,
+              background .2s ease,
+              border-color .2s ease,
+              box-shadow .2s ease;
+}
+
+.nav-btn:hover {
+  background: linear-gradient(180deg, #eaf6ff, #dbeeff);
+  border-color: #a5d5ff;
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 #ffffff,
+              0 3px 8px rgba(0,0,0,0.08);
+}
+
+.nav-btn:active {
+  transform: none;
+  background: linear-gradient(180deg, #d5ecff, #c4e4ff);
+}
+
+/* Highlighted primary button (HOME/DIRECTORY) */
+.nav-btn.is-primary {
+  background: linear-gradient(180deg, #ffd6e8, #ffb6d9);
+  border-color: #ff8ac2;
+  color: #5a0b2d;
+}
+.nav-btn.is-primary:hover {
+  background: linear-gradient(180deg, #ffb6d9, #ff8ac2);
+  border-color: #e05b9d;
+}
+
+
+/* ===== Page header ===== */
+.page-header{
+  background: var(--card);
+  border:1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 26px 22px;
+  margin-bottom: 22px;
+}
+.page-header h1{
+  margin:0;
+  font-weight: 800;
+  font-size: clamp(28px, 4.5vw, 44px);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+/* ===== Section cards ===== */
+.tos-section{
+  background: var(--card);
+  border:1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 26px 22px;
+  margin: 18px 0;
+}
+
+.tos-section h2{
+  margin: 0 0 10px 0;
+  font-size: clamp(18px, 2.2vw, 22px);
+  letter-spacing:.08em;
+  color: var(--ink-1);
+  text-transform: uppercase;
+}
+
+.tos-section p{ color:var(--ink-0); margin: 10px 0 0 0 }
+
+.tos-section ul{
+  padding-left: 1.2rem;
+  margin: 10px 0 0 0;
+}
+.tos-section li{
+  margin: 8px 0;
+  color: var(--ink-0);
+}
+.tos-section li::marker{
+  content: "• ";
+  color: var(--accent);
+}
+
+/* subtle “note” rows if you use them */
+.tos-note{
+  background:#ffffff07;
+  border-left:3px solid var(--accent-2);
+  padding:12px 14px;
+  border-radius:10px;
+  color:var(--ink-1);
+}
+
+/* ===== Links ===== */
+a{ color: var(--accent-2); text-decoration: none }
+a:hover{ text-decoration: underline }
+
+/* ===== Responsive tweaks ===== */
+@media (max-width: 720px){
+  .navbar{ gap:8px; padding:10px 12px }
+  .nav-btn{ padding:8px 12px; font-weight:600 }
+  .page-header, .tos-section{ padding:20px 16px }
+}
+
+/* ===== Optional: clamp content width on ultrawide ===== */
+@media (min-width: 1400px){
+  .container{ max-width: calc(var(--maxw) + 80px) }
+}
+
+.allow-scroll {
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  height: auto !important;
+  min-height: 100% !important;
+}
+
+/* If #root was forced to 100vh somewhere, relax it when body has allow-scroll */
+.allow-scroll #root {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-y: visible !important;
+}
+
+/* --- Ensure polkadots layer sits above page background, below cards --- */
+.tos-canvas{
+  /* you already have position:relative; keep it */
+  isolation: isolate;   /* creates its own stacking context */
+}
+
+/* With isolation, z:-1 stays behind page content but above body bg */
+.tos-canvas::before{
+  z-index: -1;          /* keep; now safe because of isolation */
+  /* if you still don't see dots, switch to z-index:0 */
+  /* z-index: 0; */
+}
+
+/* If your section cards look opaque, they might hide the dots.
+   Make sure they’re slightly translucent (you already use var(--card) with alpha). */
+.tos-section, .page-header {
+  background: var(--card); /* translucent */
+}

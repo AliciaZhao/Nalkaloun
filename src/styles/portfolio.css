@@ -1,0 +1,145 @@
+.portfolio-canvas{
+  padding: 18px 14px;
+}
+
+.masonry{
+  columns: 5 280px;
+  column-gap: 14px;
+}
+.masonry-item{
+  break-inside: avoid;
+  margin: 0 0 14px;
+  cursor: zoom-in;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  background: #fff;
+}
+.masonry-item img{
+  display:block;
+  width:100%;
+  height:auto;
+  transition: transform .25s ease, filter .25s ease;
+}
+.masonry-item:hover img{
+  transform: scale(1.03);
+}
+
+.lb{
+  position: fixed; inset: 0; z-index: 9999;
+  display: grid; place-items: center;
+  background: rgba(0,0,0,.72);
+  padding: 24px;
+}
+.lb__img{
+  max-width: 96vw; max-height: 92vh;
+  width: auto; height: auto;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.45);
+  cursor: zoom-out;
+}
+
+@media (max-width: 900px){
+  .masonry { column-gap: 10px; }
+  .masonry-item { margin-bottom: 10px; border-radius: 10px; }
+}
+
+.portfolio-page {
+  position: relative;
+  min-height: 100vh;
+  height: auto !important;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+html.allow-portfolio-scroll,
+body.allow-portfolio-scroll {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+}
+
+/* reserve space; layer blur + full image */
+.ph-wrap{
+  position: relative;
+  width: 100%;
+}
+
+.ph, .full{
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* blurred tiny preview underneath */
+.ph{
+  position: absolute;
+  inset: 0;
+  filter: blur(14px);
+  transform: scale(1.06);         /* hide edge artifacts */
+  opacity: 1;
+  transition: opacity .25s ease;
+}
+
+/* full-res fades in on load */
+.full{
+  position: relative;
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+
+/* once full loads, hide placeholder + show full */
+.ph-wrap[data-ready="1"] .ph { opacity: 0; }
+.ph-wrap[data-ready="1"] .full { opacity: 1; }
+
+/* (optional) improve text selection perf while many images animate */
+.masonry { will-change: contents; }
+
+.portfolio-header {
+  padding: 80px 16px 40px;   /* top pad, side pad, bottom pad */
+  text-align: center;
+  background: #fff;          /* adjust to your site bg */
+  color: #111;
+}
+
+.portfolio-header h1 {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 900;
+  font-size: clamp(28px, 4vw, 48px);
+  letter-spacing: .08em;
+  margin: 0;
+}
+
+.portfolio-header .sub-en {
+  display: block;
+  font-weight: 400;
+  font-size: clamp(14px, 2vw, 20px);
+  letter-spacing: .2em;
+  margin-top: 8px;
+  color: #444;
+}
+
+.portfolio-sub {
+  margin-top: 24px;
+  color: #555;
+}
+
+.portfolio-sub .jp {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.portfolio-sub hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 8px auto 16px;
+  max-width: 600px;
+}
+
+.portfolio-sub p {
+  font-size: 16px;
+  margin: 0;
+}
