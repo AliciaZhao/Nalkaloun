@@ -488,11 +488,11 @@ export default function CommissionsPage() {
         ]}
       />
       <BackgroundSticker
-        href="/contact"
+        href="/"
         img={asset("/images/commissionui/Moolly_Home_Sticker.png")}
         width="200px"
-        ariaLabel="Contact for commissions"
-        title="Contact for commissions"
+        ariaLabel="Return to Home"
+        title="Return to Home"
       />
     </main>
   );
