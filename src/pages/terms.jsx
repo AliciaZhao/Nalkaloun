@@ -17,7 +17,7 @@ export default function TermsOfService() {
         {/* NAV BAR */}
         <nav className="navbar">
           <a href="index.html" className="nav-btn is-primary">HOME</a>
-          <a href="commissions.html" className="nav-btn">COMMISSION SHEET</a>
+          <a href="/commissions" className="nav-btn">COMMISSION SHEET</a>
         </nav>
 
         {/* PAGE HEADER */}

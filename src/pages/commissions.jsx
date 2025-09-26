@@ -40,21 +40,71 @@ function CommissionCard({ src, alt, onClick }) {
 }
 
 function StickyDockInline({
-  text=":3 :3 :3",
+  links = [],               // NEW: array of { text, href }
   src,
-  w="320px",           // max width cap; it will still be responsive
-  rotate=-2
+  w = "320px",
+  rotate = -2,
 }) {
   const noteSrc = src || asset("/images/commissionui/sticky.png");
   const style = {
     "--sticky-dock-inline-w": typeof w === "number" ? `${w}px` : w,
     "--sticky-dock-rot": `${rotate}deg`,
   };
+
   return (
     <div className="sticky-dock-inline" style={style}>
-      <img className="sticky-note-img" src={noteSrc} alt="" />
-      <div className="sticky-note-content">{text}</div>
+      <img className="sticky-note-img" src={noteSrc} alt="" aria-hidden="true" />
+      <div className="sticky-note-content">
+        {links.map((link, i) => (
+          <a
+            key={i}
+            href={link.href}
+            target="_blank"
+            rel="noreferrer"
+            className="sticky-link"
+            style={{ color: link.color || "#407dff" }} 
+          >
+            {link.text}
+          </a>
+        ))}
+      </div>
     </div>
+  );
+}
+
+
+function BackgroundSticker({
+  href,                   // e.g. "/contact" or full URL
+  onClick,                // or use an onClick instead of href
+  img = asset("/images/commissionui/sticker.png"),
+  width = "220px",        // cap width (responsive below)
+  bottom = "max(16px, env(safe-area-inset-bottom) + 16px)",
+  right  = "max(16px, env(safe-area-inset-right)  + 16px)",
+  rotate = -4,
+  ariaLabel = "Open link",
+  title = "",
+}) {
+  const style = {
+    "--bgsticker-w": typeof width === "number" ? `${width}px` : width,
+    "--bgsticker-bottom": bottom,
+    "--bgsticker-right": right,
+    "--bgsticker-rot": `${rotate}deg`,
+  };
+  const Wrapper = href ? "a" : "button";
+  const wrapperProps = href
+    ? { href, target: href.startsWith("http") ? "_blank" : undefined, rel: "noreferrer" }
+    : { type: "button", onClick };
+
+  return (
+    <Wrapper
+    className="bg-sticker"
+    style={style}
+    aria-label={ariaLabel}
+    title={title || ariaLabel}
+    {...wrapperProps}   // <-- add this
+  >
+    <img src={img} alt="" aria-hidden="true" />
+  </Wrapper>
   );
 }
 
@@ -312,7 +362,23 @@ function CommissionSection({
           w={stickyW}
           rotate={stickyRotate}
         >
-          <p>:3 :3 :3</p>
+        <a 
+          href="https://twitter.com/Nalkaloun" 
+          className="p-link-top" 
+          target="_blank" 
+          rel="noreferrer"
+          
+        >
+          Follow me on Twitter! 𝕏
+        </a>
+        <a 
+          href="https://bsky.app/profile/nalkaloun.bsky.social" 
+          className="p-link-bottom" 
+          target="_blank" 
+          rel="noreferrer"
+        >
+          Follow me on Bluesky! :3
+        </a>
         </StickyNoteImage>
       )}
 
@@ -415,7 +481,19 @@ export default function CommissionsPage() {
           ]}
         />
       </CommissionSection>
-      <StickyDockInline text=":3 :3 :3" />
+      <StickyDockInline
+        links={[
+          { text: "Follow me on Twitter! 𝕏", href: "https://twitter.com/Nalkaloun", color:"#283035ff"},
+          { text: "Follow me on Bluesky! :3", href: "https://bsky.app/profile/nalkaloun.bsky.social" , color: "#1DA1F2"}
+        ]}
+      />
+      <BackgroundSticker
+        href="/contact"
+        img={asset("/images/commissionui/Moolly_Home_Sticker.png")}
+        width="200px"
+        ariaLabel="Contact for commissions"
+        title="Contact for commissions"
+      />
     </main>
   );
 }

@@ -1,9 +1,14 @@
-import { createRoot } from 'react-dom/client'
-import { HashRouter } from 'react-router-dom'
-import App from './App.jsx'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App.jsx";
+import "./global.css";
 
-createRoot(document.getElementById('root')).render(
-  <HashRouter>
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <BrowserRouter>
     <App />
-  </HashRouter>
-)
+  </BrowserRouter>
+);
+
+import { Link } from "react-router-dom";
+<Link to="/commissions" className="nav-btn">COMMISSION SHEET</Link>
