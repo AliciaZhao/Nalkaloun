@@ -243,12 +243,20 @@ img.emoji[src*="format=gif" i]{ display: inline-block; height: var(--gif-emoji-s
 .msgWrapper:has(.allMessages[uid="5gEihn1Sa4U67Nw6h2gwIOuclk53"])::before { --pfp-sprite: var(--pfp-1); }
 .msgWrapper:has(.allMessages[uid="2dwZ0F9l78XtokxNE4mSmeG7H372"])::before { --pfp-sprite: var(--pfp-2); }
 
-#emojiGrid img.emojiInGrid,
-#emojiTray #emojiGrid img.emojiInGrid {
-  width: 32px !important;
+/* Emoji tray: enlarge selection tiles (prod-safe) */
+#emojiTray .emojiInGrid {
+  width: 32px !important;          /* icon size */
   height: 32px !important;
-  padding: 4px !important;           /* bigger click target */
-  box-sizing: content-box !important;
-  border-radius: 6px;
   display: inline-block !important;
+
+  /* bigger click target without stretching the image */
+  padding: 4px !important;
+  box-sizing: content-box !important;
+
+  border-radius: 6px;               /* optional */
+  cursor: pointer;
+}
+
+#emojiTray {                         /* optional spacing inside tray */
+  padding: 4px 6px;
 }
