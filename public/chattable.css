@@ -242,3 +242,13 @@ img.emoji[src*="format=gif" i]{ display: inline-block; height: var(--gif-emoji-s
 /* Optional: explicit overrides for specific users */
 .msgWrapper:has(.allMessages[uid="5gEihn1Sa4U67Nw6h2gwIOuclk53"])::before { --pfp-sprite: var(--pfp-1); }
 .msgWrapper:has(.allMessages[uid="2dwZ0F9l78XtokxNE4mSmeG7H372"])::before { --pfp-sprite: var(--pfp-2); }
+
+#emojiGrid img.emojiInGrid,
+#emojiTray #emojiGrid img.emojiInGrid {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 4px !important;           /* bigger click target */
+  box-sizing: content-box !important;
+  border-radius: 6px;
+  display: inline-block !important;
+}
