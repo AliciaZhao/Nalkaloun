@@ -1,74 +1,56 @@
-
-/* ---------- Vars ---------- */
 :root{
-  /* avatars (use HTTPS) */
   --pfp-size: 40px;
   --pfp-outline: #AAA;
 
-  /* default avatar */
   --pfp-default-url: url("https://files.catbox.moe/zm5r2y.jpg");
 
-  /* 5-sprite pool (replace p3–p5 URLs if you want different images) */
   --pfp-1: url("https://files.catbox.moe/c2tilx.jpg");
   --pfp-2: url("https://files.catbox.moe/teh6zc.jpg");
   --pfp-3: url("https://files.catbox.moe/pxjrmp.jpg");
   --pfp-4: url("https://files.catbox.moe/igrgt6.jpg");
   --pfp-5: url("https://files.catbox.moe/rp8su2.jpg");
 
-  /* message width */
-  --row-gap: 10px;     /* gap between pfp and bubble */
-  --msg-max-ch: 54ch;  /* preferred max line length */
+  --row-gap: 10px;
+  --msg-max-ch: 54ch;
 
-  /* GIF emoji sizes */
   --gif-emoji-size: 72px;
   --gif-emoji-only-size: 120px;
 }
 
-/* ---------- Fonts ---------- */
 @font-face {
   font-family: "MSGothic";
   src: url(/media/ms-gothic.ttf);
 }
 
-/* ---------- Base ---------- */
 body {
   font-family: MS Gothic, "MSGothic";
   font-smooth: never;
   color: #000;
 }
 
-/* Backgrounds (width-locked image) */
 #background,
 #settingsMenu {
   background-image: url("https://files.catbox.moe/4lkpgy.jpg");
-  background-size: 100% auto;     /* lock to element width */
+  background-size: 100% auto;
   background-repeat: no-repeat;
-  background-attachment: scroll;  /* non-fixed */
+  background-attachment: scroll;
   background-position: center 50%;
 }
 
-/* Links */
 a { color: #88F; }
 
-/* Hide built-in chat header so your wrapper/titlebar can show */
 #top_banner { display: none !important; }
 
-/* ===========================
-   Message wrappers & bubbles
-   =========================== */
-
-/* One-row layout: PFP + bubble side-by-side */
 .msgWrapper{
   position: relative;
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
-  flex-wrap: nowrap;            /* keep on one line with avatar */
+  flex-wrap: nowrap;
   gap: var(--row-gap);
   overflow: visible;
 }
 
-/* Square avatar (base) — image chosen via --pfp-sprite or default */
 .msgWrapper:has(.allMessages)::before{
   content: "";
   width: var(--pfp-size);
@@ -83,7 +65,6 @@ a { color: #88F; }
   margin: 0; float: none;
 }
 
-/* Sent on right side */
 .msgWrapper:has(.sent){ flex-direction: row-reverse; }
 
 /* Bubble styles */
@@ -201,9 +182,6 @@ a { color: #88F; }
 }
 #is_typing > span { background-color: #AAF; border-radius: 0; height: 2px; width: 2px; }
 
-/* ===========================
-   GIF emoji sizing
-   =========================== */
 img.emoji{
   height: 1.1em; width: auto; max-width: 100%;
   vertical-align: -0.2em;
@@ -223,11 +201,6 @@ img.emoji[src*="format=gif" i]{
 }
 .allMessages img.emoji{ max-height: 50vh; }
 
-/* ===========================
-   PFP selection logic
-   - 5-sprite pool by LAST char (ASCII % 5)
-   - owner override
-   =========================== */
 
 /* Owner (replace UID + URL) */
 .msgWrapper:has(.allMessages[uid="OWNER_UID_HERE"])::before{
@@ -292,12 +265,37 @@ img.emoji[src*="format=gif" i]{
 .msgWrapper:has(.allMessages[uid$="1"]), .msgWrapper:has(.allMessages[uid$="6"])
 { --pfp-sprite: var(--pfp-5); } /* 49/54 → mod 4 */
 
-/* ---------------------------
-   Specific user avatars (override buckets if desired)
-   --------------------------- */
+
 .msgWrapper:has(.allMessages[uid="5gEihn1Sa4U67Nw6h2gwIOuclk53"])::before {
   --pfp-sprite: url("https://files.catbox.moe/kd81hd.jpg");
 }
 .msgWrapper:has(.allMessages[uid="2dwZ0F9l78XtokxNE4mSmeG7H372"])::before {
   --pfp-sprite: url("https://files.catbox.moe/zm5r2y.jpg");
+}
+
+:root{
+  --emoji-icon: 32px;
+  --emoji-hit: 40px; 
+}
+
+#emojiTray #emojiGrid { gap: 6px; }
+
+#emojiTray img.emojiInGrid{
+  width: var(--emoji-icon);
+  height: var(--emoji-icon);
+  display: inline-block;
+
+  padding: calc((var(--emoji-hit) - var(--emoji-icon)) / 2);
+  box-sizing: content-box;
+
+  border-radius: 6px; 
+  image-rendering: auto;
+  cursor: pointer;
+  transition: transform .08s ease;
+}
+#emojiTray img.emojiInGrid:hover{
+  transform: scale(1.08);
+}
+@media (pointer: coarse){
+  :root{ --emoji-icon: 36px; --emoji-hit: 48px; }
 }
