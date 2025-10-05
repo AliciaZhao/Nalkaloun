@@ -226,6 +226,9 @@ export default function Landingpage() {
             <CtaButton href="/terms" icon={<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h12v12H6z"/></svg>}>
               Terms of Service
             </CtaButton>
+            <CtaButton href="/stuff" icon={<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h12v12H6z"/></svg>}>
+              Cool Page!
+            </CtaButton>
           </div>
         </div>
       </section>

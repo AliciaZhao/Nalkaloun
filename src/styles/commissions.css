@@ -81,22 +81,40 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 
-.commissions-canvas::before{
+.commissions-canvas::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
+
   background:
     radial-gradient(var(--polka-accent) var(--polka-dot), transparent calc(var(--polka-dot) + 1px)) 0 0 / var(--polka-size) var(--polka-size),
     radial-gradient(var(--polka-accent) var(--polka-dot), transparent calc(var(--polka-dot) + 1px)) calc(var(--polka-size)/2) calc(var(--polka-size)/2) / var(--polka-size) var(--polka-size),
     #fff;
+
   -webkit-mask-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,0) var(--polka-fade-inner), rgba(0,0,0,1) var(--polka-fade-outer));
   mask-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,0) var(--polka-fade-inner), rgba(0,0,0,1) var(--polka-fade-outer));
   -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+
+  /* adjust this number to control speed */
+  animation: polka-down .8s linear infinite;
 }
 
+@keyframes polka-down {
+  to {
+    background-position:
+      0 var(--polka-size),
+      calc(var(--polka-size)/2) calc(var(--polka-size)*1.5),
+      0 0;
+  }
+}
+
+/* optional: respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .commissions-canvas::before { animation: none; }
+}
 /* ===== Framed sheet ===== */
 .sheet{
   margin: var(--sheet-gap) auto;

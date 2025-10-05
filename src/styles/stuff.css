@@ -1,0 +1,120 @@
+/* --- theme knobs --- */
+:root{
+  --pw-bg: #136675b6;          /* set a real background (or #fff) */
+  --pw-title-1:#152436;
+  --pw-title-2: #253c41;
+  --pw-outline-1: #152436;   /* outer border color (visible frame) */
+  --pw-outline-2: #131110;   /* inner bevel line */
+  --pw-shadow: rgba(71,107,116,.45);
+  --pw-title-text: #d7e6c4;
+  --pw-btn-bg-1: #c6e2e0;
+  --pw-btn-bg-2: #b1d8d5;
+  --pw-btn-stroke: #0f5a4e;
+}
+
+/* wrapper owns the frame */
+.chattable-wrapper.pixel-window{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(90%, 800px);
+  height: 600px;
+  margin: 40px auto;
+  background: var(--pw-bg);
+  border: 5px solid var(--pw-outline-1);     /* visible box border */
+  border-radius: 2px;
+  box-shadow: 0 10px 22px var(--pw-shadow);
+  overflow: hidden;                           /* keep edges crisp */
+}
+
+/* inner bevel (double-border look) */
+.chattable-wrapper.pixel-window::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 0px var(--pw-outline-2);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* titlebar */
+.pw-titlebar{
+  position: relative;
+  z-index: 1;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  color: var(--pw-title-text);
+  font-weight: 700;
+  text-shadow: 1px 1px 0 #31165f;
+  background:
+    linear-gradient(180deg, var(--pw-title-1), var(--pw-title-2)),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.08) 0 2px, transparent 2px 4px);
+}
+
+/* title + window buttons */
+.pw-title{ font-family: MS Gothic, "MSGothic"; letter-spacing:.3px; }
+.pw-controls{ display:flex; gap:6px; }
+.pw-btn{
+  width:20px; height:20px;
+  border:1px solid var(--pw-btn-stroke);
+  border-radius:3px;
+  background: linear-gradient(180deg, var(--pw-btn-bg-1), var(--pw-btn-bg-2));
+  box-shadow: inset 0 1px 0 #fff3;
+  position:relative;
+}
+.pw-btn::after{ content:""; position:absolute; inset:0; display:grid; place-items:center; font-size:9px; color:#2b0a55; font-weight:900; }
+.pw-min::after{ content:"—"; line-height:12px; }
+.pw-max::after{ content:"☐"; }
+.pw-close::after{ content:"✕"; background-color: rgb(165, 71, 71);}
+
+/* body area */
+.pw-body{
+  position: relative; z-index: 1;
+  flex: 1 1 auto;
+  padding: 8px;
+}
+
+/* iframe fills body */
+#chattable{ width:100%; height:100%; border:0; background:transparent; }
+
+/* bottom decor / status bar */
+.pw-status{
+  position: relative;
+  z-index: 1;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  background:
+    linear-gradient(180deg, #152436, #1d1f20);
+  border-top: 1px solid #324452;             /* subtle separator */
+}
+
+/* little grip + led to match the reference look */
+.pw-grip{
+  width: 44px; height: 12px;
+  background:
+    repeating-linear-gradient(90deg, #222b2c 0 6px, #365779 6px 12px);
+  border: 1px solid #080808;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 0 #ffffff1a;
+}
+.pw-led{
+  width: 8px; height: 8px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #24ff85, #0aac54);
+  box-shadow: 0 0 6px #24ff85aa;
+}
+.pw-hint{
+  font-size: 12px;
+  color: #cfe7ff;
+  font-family: MS Gothic, "MSGothic";
+  opacity: .85;
+}
+
+/* hide Chattable's header so only wrapper's titlebar shows */
+#top_banner{ display:none !important; }

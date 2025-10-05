@@ -1,24 +1,33 @@
 /* ===== Global safeties ===== */
 html, body { margin:0; padding:0; overflow-x:hidden; height: 100%; }
-  @media (min-width: 641px){
+@media (min-width: 641px){
   html, body { overflow:hidden; }
 }
 #root { max-width:none !important; padding:0 !important; text-align:initial !important; }
 img { display:block; max-width:100%; }
 *, *::before, *::after { box-sizing:border-box; }
+
+/* ===== Variables ===== */
 :root{
   --brand-shift-x: -300px;   /* left */
-  --brand-shift-y: 25vh;    /* down */
+  --brand-shift-y: 25vh;     /* down */
+
+  /* Polka dot settings */
+  --polka-size: 38px;                   /* grid spacing */
+  --polka-dot: rgb(255, 255, 255, 1);  /* dot color over navy (alpha is required) */
+  --polka-speed: 80s;                   /* slower = longer */
+  --polka-shift: 240px;                 /* diagonal drift distance */
 }
+
 @media (max-width:1200px){
   :root{
-    --brand-shift-x: -0vw;
+    --brand-shift-x: 0vw;
     --brand-shift-y: 22vh;
   }
 }
 @media (max-width:900px){
   :root{
-    --brand-shift-x: -0vw;
+    --brand-shift-x: 0vw;
     --brand-shift-y: 30vh;
   }
 }
@@ -34,13 +43,11 @@ img { display:block; max-width:100%; }
   z-index:0;
   min-width:0;
 }
-
 .landing-hero-panel{
   position:relative;
   overflow:hidden;
   min-width:0;
 }
-
 /* image + hover */
 .landing-hero-panel img{
   position:absolute; inset:0; width:100%; height:100%;
@@ -93,9 +100,11 @@ img { display:block; max-width:100%; }
   .landing-hero-panel::after{ transition:none; }
 }
 
-/* ===== BOTTOM BAND ===== */
+/* ===== BOTTOM BAND (navy area) =====
+   Navy gradient and glow live on the element.
+   Polka dots live on ::before so they can’t be overridden. */
 .landing-band{
-  position:relative;             /* anchor for CTAs */
+  position:relative;             /* anchor for CTAs and ::before */
   min-height:40vh;
   background:
     radial-gradient(1200px 400px at 20% 0%, rgba(255,255,255,.06), transparent 60%),
@@ -103,8 +112,29 @@ img { display:block; max-width:100%; }
   border-top:1px solid rgba(111, 0, 255, 0.05);
   display:block;
   z-index:2;                     /* above hero (prevents clipping) */
-  isolation:isolate;             /* its own stacking context */
+  isolation:isolate;             /* its own stacking context (for ::before) */
 }
+
+/* Drifting polka dots layer (independent of main background) */
+.landing-band::before{
+  content:"";
+  position:absolute; inset:0;
+  z-index:0; pointer-events:none;
+  background-image: radial-gradient(var(--polka-dot) 2px, transparent 2px);
+  background-size: var(--polka-size) var(--polka-size);
+  background-position: 0 0;
+  animation: polka-drift var(--polka-speed) linear infinite;
+  opacity: .85; /* adjust for subtlety */
+}
+
+@keyframes polka-drift{
+  to { background-position: var(--polka-shift) var(--polka-shift); } /* diagonal */
+}
+
+/* content sits above dots */
+.band-inner{ position:relative; z-index:1; }
+
+/* band layout */
 .band-inner{
   max-width:1200px;
   margin:0 auto;
@@ -115,6 +145,11 @@ img { display:block; max-width:100%; }
   align-items:start;
 }
 @media (max-width: 900px){ .band-inner{ grid-template-columns:1fr; } }
+
+/* accessibility */
+@media (prefers-reduced-motion: reduce){
+  .landing-band::before{ animation:none; }
+}
 
 /* ===== Brand / Type (unchanged visuals) ===== */
 .brand{
@@ -144,16 +179,15 @@ img { display:block; max-width:100%; }
   color: #27dcb666;
 }
 .sub{ font-family:'Oswald', sans-serif; margin-top:6px; color:#d1d5db; font-weight:700; font-size:30px; }
-.blurb{ font-family:'Oswald', sans-serif; margin-top:4px; color:#9ca3af; font-size:24px; }
+.blurb{ font-family:'Oswald', sans-serif; margin-top:0px; color:#9ca3af; font-size:24px; }
 
 .support-title{
   font-family:'Oswald', sans-serif;
-  margin-top:22px; font-size:18px; letter-spacing:.35em; font-weight:800; color:#c9ccd1;
+  margin-top:5px; font-size:15px; letter-spacing:.35em; font-weight:800; color:#c9ccd1;
 }
 .support-row{ margin-top:14px; display:flex; gap:14px; flex-wrap:wrap; }
 
 /* hide when hero is selected*/
-
 .is-hero-focused .sub,
 .is-hero-focused .blurb,
 .is-hero-focused .support-title,
@@ -222,12 +256,14 @@ img { display:block; max-width:100%; }
   pointer-events:none;
   transition:opacity .25s ease, transform .35s ease;
 }
-.cta-stack.normal .cta:nth-child(4){ transition-delay:0ms; }
-.cta-stack.normal .cta:nth-child(3){ transition-delay:60ms; }
+.cta-stack.normal .cta:nth-child(5){ transition-delay:0ms; }
+.cta-stack.normal .cta:nth-child(4){ transition-delay:60ms; }
+.cta-stack.normal .cta:nth-child(3){ transition-delay:90ms; }
 .cta-stack.normal .cta:nth-child(2){ transition-delay:120ms; }
 .cta-stack.normal .cta:nth-child(1){ transition-delay:180ms; }
-.cta-stack.compact .cta:nth-child(4){ transition-delay:180ms; }
-.cta-stack.compact .cta:nth-child(3){ transition-delay:120ms; }
+.cta-stack.compact .cta:nth-child(5){ transition-delay:180ms; }
+.cta-stack.compact .cta:nth-child(4){ transition-delay:120ms; }
+.cta-stack.compact .cta:nth-child(3){ transition-delay:90ms; }
 .cta-stack.compact .cta:nth-child(2){ transition-delay:60ms; }
 .cta-stack.compact .cta:nth-child(1){ transition-delay:0ms; }
 
@@ -236,13 +272,12 @@ img { display:block; max-width:100%; }
   position:relative;
   display:flex; align-items:center; gap:12px;
   width:100%;
-  padding:14px 20px;
-  border-radius:10px;
-  background:linear-gradient(180deg, #e5e7eb 0%, #c9ccd1 100%);
+  padding:10px 20px;
+  border-radius:3px;
+  background:linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
   color:#0f172a;
   font-weight:800; letter-spacing:.08em; text-transform:uppercase;
-  border:1px solid rgba(0,0,0,.16);
-  box-shadow:0 6px 22px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(0,0,0,.08);
+  box-shadow:0 6px 22px rgba(0,0,0,.35);
   transition:transform .2s ease, box-shadow .2s ease;
   overflow:hidden;
   isolation:isolate;                   /* keep ::before under text */
@@ -250,7 +285,7 @@ img { display:block; max-width:100%; }
 }
 .cta:hover{
   transform:translateY(-1px);
-  box-shadow:0 10px 26px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,1);
+  box-shadow:0 10px 26px rgba(0,0,0,.45);
 }
 /* keep children above the swipe fill */
 .cta > *{ position:relative; z-index:1; }
@@ -262,7 +297,6 @@ a svg, button svg { width:1rem; height:1rem; flex:none; }
 /* Diagonal swipe */
 .cta.diag-swipe{ position:relative; overflow:hidden; isolation:isolate; }
 .cta.diag-swipe > *{ position:relative; z-index:1; }
-
 .cta.diag-swipe::before{
   content:"";
   position:absolute; inset:0;
@@ -273,12 +307,10 @@ a svg, button svg { width:1rem; height:1rem; flex:none; }
   transition: clip-path .45s ease;
   z-index:0;
 }
-
 .cta.diag-swipe:hover::before{
   /* slide the wedge off to the right, covering fully on the way */
   clip-path: polygon(90% 0, 120% 0, 110% 100%, 80% 100%);
 }
-
 .cta.diag-swipe:hover{ color:#da2a5a; }
 
 /* Optional per-button accents */
@@ -291,9 +323,7 @@ a svg, button svg { width:1rem; height:1rem; flex:none; }
 @media (max-width: 640px){
 
   /* true page background + dark underlay only on landing */
-  .landing-page {
-    background: #0f172a;
-  }
+  .landing-page { background: #0f172a; }
   .landing-page::before {
     content:"";
     position:fixed; inset:0;
@@ -329,11 +359,10 @@ a svg, button svg { width:1rem; height:1rem; flex:none; }
   .landing-page .landing-hero-panel::after,
   .landing-page .landing-hero-panel.dimmed::after { opacity: 0 !important; }
 
-  /* band flows normally under hero */
+  /* band flows normally under hero, keep layered bg; dots stay via ::before */
   .landing-page .landing-band {
     min-height:auto !important;
     padding:16px clamp(14px,4vw,24px) max(32px, env(safe-area-inset-bottom));
-    background:#0f172a;
   }
 
   /* brand: static, no animation */
@@ -359,7 +388,7 @@ a svg, button svg { width:1rem; height:1rem; flex:none; }
 
   /* text scaling */
   .landing-page .sub { font-size:clamp(16px, 4.6vw, 20px); }
-  .landing-page .blurb { font-size:clamp(14px, 4.2vw, 18px); }
+  .landing-page .blurb { font-size:clamp(12px, 4.2vw, 18px); }
 
   /* CTAs: always visible, no animation */
   .landing-page .cta-stack {
@@ -389,4 +418,17 @@ a svg, button svg { width:1rem; height:1rem; flex:none; }
     -webkit-backdrop-filter:saturate(150%) blur(8px);
     backdrop-filter:saturate(150%) blur(8px);
   }
+}
+.landing-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgb(255, 255, 255, 0.03) 10px, transparent 2px);
+  background-size: 40px 40px;
+  animation: polka-drift 8s linear infinite;
+}
+@keyframes polka-drift {
+  to { background-position: 240px 240px; }
 }
