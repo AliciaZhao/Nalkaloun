@@ -274,28 +274,26 @@ img.emoji[src*="format=gif" i]{
 }
 
 :root{
-  --emoji-icon: 32px;
-  --emoji-hit: 40px; 
+  --emoji-icon: 32px;  
+  --emoji-hit: 40px;
 }
 
-#emojiTray #emojiGrid { gap: 6px; }
+#emojiTray #emojiGrid { gap: 6px !important; }
 
 #emojiTray img.emojiInGrid{
-  width: var(--emoji-icon);
-  height: var(--emoji-icon);
+  width: var(--emoji-icon) !important;
+  height: var(--emoji-icon) !important;
   display: inline-block;
 
-  padding: calc((var(--emoji-hit) - var(--emoji-icon)) / 2);
-  box-sizing: content-box;
+  padding: calc((var(--emoji-hit) - var(--emoji-icon)) / 2) !important;
+  box-sizing: content-box !important;
 
-  border-radius: 6px; 
-  image-rendering: auto;
+  border-radius: 6px;
   cursor: pointer;
   transition: transform .08s ease;
 }
-#emojiTray img.emojiInGrid:hover{
-  transform: scale(1.08);
-}
+#emojiTray img.emojiInGrid:hover{ transform: scale(1.08); }
+
 @media (pointer: coarse){
   :root{ --emoji-icon: 36px; --emoji-hit: 48px; }
 }
