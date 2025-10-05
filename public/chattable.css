@@ -1,7 +1,17 @@
+/* ===============================
+   CLEAN THEME (square PFP + width cap + GIF emoji)
+   + 5-sprite randomized PFPs (last-char ASCII mod 5)
+   + owner override
+   + absolute URLs only
+   =============================== */
+
+/* -------- Vars -------- */
 :root{
+  /* avatars */
   --pfp-size: 40px;
   --pfp-outline: #AAA;
 
+  /* default & pool (HTTPS URLs) */
   --pfp-default-url: url("https://files.catbox.moe/zm5r2y.jpg");
   --pfp-1: url("https://files.catbox.moe/c2tilx.jpg");
   --pfp-2: url("https://files.catbox.moe/teh6zc.jpg");
@@ -9,21 +19,30 @@
   --pfp-4: url("https://files.catbox.moe/igrgt6.jpg");
   --pfp-5: url("https://files.catbox.moe/rp8su2.jpg");
 
+  /* message width */
   --row-gap: 10px;
   --msg-max-ch: 54ch;
 
+  /* GIF emoji sizes */
   --gif-emoji-size: 72px;
   --gif-emoji-only-size: 120px;
 
-  --emoji-icon: 32px; 
-  --emoji-hit: 40px;
+  /* emoji picker */
+  --emoji-icon: 32px;   /* tile image */
+  --emoji-hit: 40px;    /* click target */
 }
 
-@font-face { font-family: "MSGothic"; src: url(/media/ms-gothic.ttf); }
-body { font-family: MS Gothic, "MSGothic"; font-smooth: never; color: #000; }
-a { color: #88F; }
-#top_banner { display: none !important; }
+/* -------- Fonts / Base (absolute URLs) -------- */
+@font-face{
+  font-family: "MSGothic";
+  src: url("https://YOUR-DOMAIN.com/media/ms-gothic.ttf") format("truetype");
+  font-display: swap;
+}
+body{ font-family: MS Gothic, "MSGothic"; font-smooth: never; color:#000; }
+a{ color:#88F; }
+#top_banner{ display:none !important; }
 
+/* Background (absolute) */
 #background, #settingsMenu{
   background-image: url("https://files.catbox.moe/4lkpgy.jpg");
   background-size: 100% auto;
@@ -31,6 +50,10 @@ a { color: #88F; }
   background-attachment: scroll;
   background-position: center 50%;
 }
+
+/* ===========================
+   Messages & avatars
+   =========================== */
 
 .msgWrapper{
   position: relative;
@@ -42,12 +65,13 @@ a { color: #88F; }
   overflow: visible;
 }
 
+/* square avatar (image chosen via --pfp-sprite or default) */
 .msgWrapper:has(.allMessages)::before{
   content: "";
   width: var(--pfp-size);
   height: var(--pfp-size);
   flex: 0 0 var(--pfp-size);
-  border-radius: 0;             /* square */
+  border-radius: 0;                 /* square */
   background-color: #FFF;
   background-image: var(--pfp-sprite, var(--pfp-default-url));
   background-size: cover;
@@ -56,113 +80,123 @@ a { color: #88F; }
   margin: 0; float: none;
 }
 
+/* sent on right side */
 .msgWrapper:has(.sent){ flex-direction: row-reverse; }
 
+/* bubble */
 .allMessages{
-  background-color: #FFF;
+  background-color:#FFF;
   box-shadow: 0 0 4px #FFF, 0 0 4px #FFF, 0 0 4px #FFF, 0 0 4px #FFF, 0 0 4px #FFF, 0 3px 4px #005;
-  border: 1px solid #88F;
-  border-radius: 8px;
-  margin: 0 20px;
-  position: relative;
-  box-sizing: border-box;
+  border:1px solid #88F;
+  border-radius:8px;
+  margin:0 20px;
+  position:relative;
+  box-sizing:border-box;
 
-  flex: 0 1 auto;
-  min-width: 0;
+  /* width cap */
+  flex:0 1 auto;
+  min-width:0;
   max-width: clamp(32ch, calc(100% - var(--pfp-size) - var(--row-gap)), var(--msg-max-ch));
 }
+.allMessages.containsOnlyEmojis .emoji{ height:50px; }
+.msgWrapper + .msgWrapper{ margin-top:25px; margin-bottom:15px; }
 
-.allMessages.containsOnlyEmojis .emoji { height: 50px; }
-.msgWrapper + .msgWrapper { margin-top: 25px; margin-bottom: 15px; }
-
-.msgWrapper:has(.pm) { padding-top: 26px; }
-.allMessages.pm { border-color: #F55; }
+/* PM ribbon */
+.msgWrapper:has(.pm){ padding-top:26px; }
+.allMessages.pm{ border-color:#F55; }
 .allMessages.pm:after{
-  content: "Private Message";
-  display: flex; align-items: center; justify-content: center;
-  background-color: #F55; color: #FFF;
-  height: 16px; padding: 5px;
-  position: absolute; right: 5vw; bottom: 100%; z-index: 5;
-  border-radius: 5px 5px 0 0;
+  content:"Private Message";
+  display:flex; align-items:center; justify-content:center;
+  background-color:#F55; color:#FFF;
+  height:16px; padding:5px;
+  position:absolute; right:5vw; bottom:100%; z-index:5;
+  border-radius:5px 5px 0 0;
 }
 
+/* tails */
 .sent{
-  border-radius: 5px 5px 0 5px;
-  background-color: rgb(199, 233, 255);
-  color: #111;
+  border-radius:5px 5px 0 5px;
+  background-color:rgb(199,233,255);
+  color:#111;
 }
 .sent:after{
-  content: "";
-  background-color: inherit;
-  height: 10px; width: 10px;
-  position: absolute; right: -6px; bottom: 6px;
-  transform: rotateZ(45deg);
-  border-radius: 0 2px 0 0;
-  border-right: 1px solid #000; border-top: 1px solid #000;
+  content:"";
+  background-color:inherit;
+  height:10px; width:10px;
+  position:absolute; right:-6px; bottom:6px;
+  transform:rotateZ(45deg);
+  border-radius:0 2px 0 0;
+  border-right:1px solid #000; border-top:1px solid #000;
 }
 .recieved, .received{
-  border-radius: 5px 5px 5px 0;
-  background-color: rgb(255, 255, 183);
-  color: #000;
+  border-radius:5px 5px 5px 0;
+  background-color:rgb(255,255,183);
+  color:#000;
 }
 .recieved:after, .received:after{
-  content: "";
-  background-color: inherit;
-  height: 10px; width: 10px;
-  position: absolute; left: -6px; bottom: 6px;
-  transform: rotateZ(45deg);
-  border-radius: 0 0 0 2px;
-  border-left: 1px solid #000; border-bottom: 1px solid #000;
+  content:"";
+  background-color:inherit;
+  height:10px; width:10px;
+  position:absolute; left:-6px; bottom:6px;
+  transform:rotateZ(45deg);
+  border-radius:0 0 0 2px;
+  border-left:1px solid #000; border-bottom:1px solid #000;
 }
 
-#timestamp{ font-size: 8pt; margin-top: 10px !important; padding-left: 30px; }
+/* timestamp */
+#timestamp{ font-size:8pt; margin-top:10px !important; padding-left:30px; }
 
+/* inputs */
 #input, #nameEntry{
-  background-color: #FFF;
-  border-radius: 0;
-  border-top: 1px solid #AAF;
+  background-color:#FFF;
+  border-radius:0;
+  border-top:1px solid #AAF;
   font-family: MS Gothic, "MSGothic";
 }
-#name{ background-color: #FFF; border-radius: 0; border: 1px solid #88F; padding: 2px; font-family: MS Gothic, "MSGothic"; }
+#name{ background-color:#FFF; border-radius:0; border:1px solid #88F; padding:2px; font-family: MS Gothic, "MSGothic"; }
 
-#settings:hover{ filter: drop-shadow(0 0 3px #FFF) drop-shadow(0 0 3px #FFF) drop-shadow(0 0 3px #FFF); transform: rotate(180deg); }
-#settings{ filter: drop-shadow(0 0 1px #FFF) drop-shadow(0 0 1px #FFF) drop-shadow(0 0 1px #FFF); transition: all 250ms linear; }
-
+/* settings icon (absolute URL for image) */
 #emojiTrayToggle{
-  height: 15px; width: 15px;
-  padding: 6px; margin-top: 3px; margin-left: 3px;
-  background-image: url(/media/pixel-emoji.webp) !important;
-  opacity: 0.5;
+  height:20x; width:20px; padding:0px; margin-top:1px; margin-left:3px;
+  align-self: center;
+   border-radius: 0 !important;
+  background-image: url("https://files.catbox.moe/2qm2sm.jpg") !important;
 }
 
+/* typing pill */
 #is_typing{
   filter: drop-shadow(0 0 1px #FFF) drop-shadow(0 0 1px #FFF) drop-shadow(0 0 1px #FFF);
-  background-color: #FFF;
-  border: 1px solid #AAF;
-  border-radius: 3px;
-  left: unset; right: 10px; bottom: 27px;
-  overflow: visible;
+  background-color:#FFF;
+  border:1px solid #AAF;
+  border-radius:3px;
+  left:unset; right:10px; bottom:27px;
+  overflow:visible;
 }
 #is_typing:hover::after{
-  display: flex; align-items: center; justify-content: flex-end;
-  content: "Someone is typing";
-  font-size: 10pt;
-  position: fixed; right: 35px; bottom: 0; width: 50vw;
-  color: #000; z-index: 100000;
+  display:flex; align-items:center; justify-content:flex-end;
+  content:"Someone is typing";
+  font-size:10pt;
+  position:fixed; right:35px; bottom:0; width:50vw;
+  color:#000; z-index:100000;
 }
-#is_typing > span{ background-color: #AAF; border-radius: 0; height: 2px; width: 2px; }
+#is_typing > span{ background-color:#AAF; border-radius:0; height:2px; width:2px; }
 
-img.emoji{ height: 1.1em; width: auto; max-width: 100%; vertical-align: -0.2em; }
+/* ===========================
+   GIF emojis inside messages
+   =========================== */
+img.emoji{ height:1.1em; width:auto; max-width:100%; vertical-align:-0.2em; }
 img.emoji[src$=".gif"],
 img.emoji[src*=".gif?" i],
-img.emoji[src*="format=gif" i]{ display: inline-block; height: var(--gif-emoji-size); width: auto; vertical-align: middle; }
+img.emoji[src*="format=gif" i]{ display:inline-block; height:var(--gif-emoji-size); width:auto; vertical-align:middle; }
 .allMessages.containsOnlyEmojis img.emoji[src$=".gif"],
 .allMessages.containsOnlyEmojis img.emoji[src*=".gif?" i],
-.allMessages.containsOnlyEmojis img.emoji[src*="format=gif" i]{ height: var(--gif-emoji-only-size); }
-.allMessages img.emoji{ max-height: 50vh; }
+.allMessages.containsOnlyEmojis img.emoji[src*="format=gif" i]{ height:var(--gif-emoji-only-size); }
+.allMessages img.emoji{ max-height:50vh; }
 
-
-#emojiTray #emojiGrid{ gap: 6px !important; }
+/* ===========================
+   Emoji picker (.emojiInGrid)
+   =========================== */
+#emojiTray #emojiGrid{ gap:6px !important; }
 #emojiTray img.emojiInGrid{
   width: var(--emoji-icon) !important;
   height: var(--emoji-icon) !important;
@@ -174,30 +208,32 @@ img.emoji[src*="format=gif" i]{ display: inline-block; height: var(--gif-emoji-s
   transition: transform .08s ease;
 }
 #emojiTray img.emojiInGrid:hover{ transform: scale(1.08); }
-@media (pointer: coarse){ :root{ --emoji-icon: 36px; --emoji-hit: 48px; } }
+@media (pointer: coarse){ :root{ --emoji-icon:36px; --emoji-hit:48px; } }
 
+/* ===========================
+   PFP selection logic
+   - owner override
+   - 5-sprite pool by LAST char (ASCII % 5)
+   =========================== */
 
+/* Owner (replace UID + URL) */
 .msgWrapper:has(.allMessages[uid="OWNER_UID_HERE"])::before{
-  --pfp-sprite: url("https://your.cdn.com/avatars/owner.png");
+  --pfp-sprite: url("https://YOUR-DOMAIN.com/avatars/owner.png");
 }
 
 /* Uppercase A..Z buckets */
 .msgWrapper:has(.allMessages[uid$="A"]), .msgWrapper:has(.allMessages[uid$="F"]), .msgWrapper:has(.allMessages[uid$="K"]),
 .msgWrapper:has(.allMessages[uid$="P"]), .msgWrapper:has(.allMessages[uid$="U"]), .msgWrapper:has(.allMessages[uid$="Z"])
 { --pfp-sprite: var(--pfp-1); } /* mod 0 */
-
 .msgWrapper:has(.allMessages[uid$="B"]), .msgWrapper:has(.allMessages[uid$="G"]), .msgWrapper:has(.allMessages[uid$="L"]),
 .msgWrapper:has(.allMessages[uid$="Q"]), .msgWrapper:has(.allMessages[uid$="V"])
 { --pfp-sprite: var(--pfp-2); } /* mod 1 */
-
 .msgWrapper:has(.allMessages[uid$="C"]), .msgWrapper:has(.allMessages[uid$="H"]), .msgWrapper:has(.allMessages[uid$="M"]),
 .msgWrapper:has(.allMessages[uid$="R"]), .msgWrapper:has(.allMessages[uid$="W"])
 { --pfp-sprite: var(--pfp-3); } /* mod 2 */
-
 .msgWrapper:has(.allMessages[uid$="D"]), .msgWrapper:has(.allMessages[uid$="I"]), .msgWrapper:has(.allMessages[uid$="N"]),
 .msgWrapper:has(.allMessages[uid$="S"]), .msgWrapper:has(.allMessages[uid$="X"])
 { --pfp-sprite: var(--pfp-4); } /* mod 3 */
-
 .msgWrapper:has(.allMessages[uid$="E"]), .msgWrapper:has(.allMessages[uid$="J"]), .msgWrapper:has(.allMessages[uid$="O"]),
 .msgWrapper:has(.allMessages[uid$="T"]), .msgWrapper:has(.allMessages[uid$="Y"])
 { --pfp-sprite: var(--pfp-5); } /* mod 4 */
@@ -205,58 +241,32 @@ img.emoji[src*="format=gif" i]{ display: inline-block; height: var(--gif-emoji-s
 /* Lowercase a..z buckets */
 .msgWrapper:has(.allMessages[uid$="d"]), .msgWrapper:has(.allMessages[uid$="i"]), .msgWrapper:has(.allMessages[uid$="n"]),
 .msgWrapper:has(.allMessages[uid$="s"]), .msgWrapper:has(.allMessages[uid$="x"])
-{ --pfp-sprite: var(--pfp-1); } /* mod 0 */
-
+{ --pfp-sprite: var(--pfp-1); }
 .msgWrapper:has(.allMessages[uid$="e"]), .msgWrapper:has(.allMessages[uid$="j"]), .msgWrapper:has(.allMessages[uid$="o"]),
 .msgWrapper:has(.allMessages[uid$="t"]), .msgWrapper:has(.allMessages[uid$="y"])
-{ --pfp-sprite: var(--pfp-2); } /* mod 1 */
-
+{ --pfp-sprite: var(--pfp-2); }
 .msgWrapper:has(.allMessages[uid$="a"]), .msgWrapper:has(.allMessages[uid$="f"]), .msgWrapper:has(.allMessages[uid$="k"]),
 .msgWrapper:has(.allMessages[uid$="p"]), .msgWrapper:has(.allMessages[uid$="u"]), .msgWrapper:has(.allMessages[uid$="z"])
-{ --pfp-sprite: var(--pfp-3); } /* mod 2 */
-
+{ --pfp-sprite: var(--pfp-3); }
 .msgWrapper:has(.allMessages[uid$="b"]), .msgWrapper:has(.allMessages[uid$="g"]), .msgWrapper:has(.allMessages[uid$="l"]),
 .msgWrapper:has(.allMessages[uid$="q"]), .msgWrapper:has(.allMessages[uid$="v"])
-{ --pfp-sprite: var(--pfp-4); } /* mod 3 */
-
+{ --pfp-sprite: var(--pfp-4); }
 .msgWrapper:has(.allMessages[uid$="c"]), .msgWrapper:has(.allMessages[uid$="h"]), .msgWrapper:has(.allMessages[uid$="m"]),
 .msgWrapper:has(.allMessages[uid$="r"]), .msgWrapper:has(.allMessages[uid$="w"])
-{ --pfp-sprite: var(--pfp-5); } /* mod 4 */
+{ --pfp-sprite: var(--pfp-5); }
 
-/* Digits 0..9 buckets (ASCII % 5 mapping) */
+/* Digits 0..9 buckets */
 .msgWrapper:has(.allMessages[uid$="2"]), .msgWrapper:has(.allMessages[uid$="7"])
-{ --pfp-sprite: var(--pfp-1); } /* 50/55 → 0 */
-
+{ --pfp-sprite: var(--pfp-1); }
 .msgWrapper:has(.allMessages[uid$="3"]), .msgWrapper:has(.allMessages[uid$="8"])
-{ --pfp-sprite: var(--pfp-2); } /* 51/56 → 1 */
-
+{ --pfp-sprite: var(--pfp-2); }
 .msgWrapper:has(.allMessages[uid$="4"]), .msgWrapper:has(.allMessages[uid$="9"])
-{ --pfp-sprite: var(--pfp-3); } /* 52/57 → 2 */
-
+{ --pfp-sprite: var(--pfp-3); }
 .msgWrapper:has(.allMessages[uid$="0"]), .msgWrapper:has(.allMessages[uid$="5"])
-{ --pfp-sprite: var(--pfp-4); } /* 48/53 → 3 */
-
+{ --pfp-sprite: var(--pfp-4); }
 .msgWrapper:has(.allMessages[uid$="1"]), .msgWrapper:has(.allMessages[uid$="6"])
-{ --pfp-sprite: var(--pfp-5); } /* 49/54 → 4 */
+{ --pfp-sprite: var(--pfp-5); }
 
-/* Optional: explicit overrides for specific users */
-.msgWrapper:has(.allMessages[uid="5gEihn1Sa4U67Nw6h2gwIOuclk53"])::before { --pfp-sprite: var(--pfp-1); }
-.msgWrapper:has(.allMessages[uid="2dwZ0F9l78XtokxNE4mSmeG7H372"])::before { --pfp-sprite: var(--pfp-2); }
-
-/* Emoji tray: enlarge selection tiles (prod-safe) */
-#emojiTray .emojiInGrid {
-  width: 32px !important;          /* icon size */
-  height: 32px !important;
-  display: inline-block !important;
-
-  /* bigger click target without stretching the image */
-  padding: 4px !important;
-  box-sizing: content-box !important;
-
-  border-radius: 6px;               /* optional */
-  cursor: pointer;
-}
-
-#emojiTray {                         /* optional spacing inside tray */
-  padding: 4px 6px;
-}
+/* Explicit overrides (optional) */
+.msgWrapper:has(.allMessages[uid="5gEihn1Sa4U67Nw6h2gwIOuclk53"])::before{ --pfp-sprite: var(--pfp-1); }
+.msgWrapper:has(.allMessages[uid="2dwZ0F9l78XtokxNE4mSmeG7H372"])::before{ --pfp-sprite: var(--pfp-2); }
