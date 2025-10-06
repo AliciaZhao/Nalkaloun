@@ -1,120 +1,242 @@
-/* --- theme knobs --- */
+/* ---------- fonts MUST be first ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Aldrich&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&display=swap');
+
+/* ---------- reset ---------- */
+html, body { margin: 0; padding: 0; }
+* { box-sizing: border-box; }
+html, body, #root { min-height: 100%; }
+
+/* ---------- theme vars ---------- */
 :root{
-  --pw-bg: #136675b6;          /* set a real background (or #fff) */
-  --pw-title-1:#152436;
-  --pw-title-2: #253c41;
-  --pw-outline-1: #152436;   /* outer border color (visible frame) */
-  --pw-outline-2: #131110;   /* inner bevel line */
-  --pw-shadow: rgba(71,107,116,.45);
-  --pw-title-text: #d7e6c4;
-  --pw-btn-bg-1: #c6e2e0;
-  --pw-btn-bg-2: #b1d8d5;
-  --pw-btn-stroke: #0f5a4e;
+  --page-wallpaper: url("https://files.catbox.moe/u41ym4.jpg");
+  --footer-image:   url("https://files.catbox.moe/x1i3x5.png");
+
+  --pw-bg: #f7f9fc;
+
+  --pw-title-1: #cde4fa;
+  --pw-title-2: #94a9be;
+  --pw-title-3: #87a1c0;
+  --pw-title-4: #668cb8;
+
+  --pw-outline-1: #3b3b3b;
+  --pw-outline-2: #e6edf5;
+  --pw-shadow: rgba(255,255,255,.35);
+
+  --pw-title-text: #ffffff;
+
+  --pw-btn-bg-1: #e8f1ff;
+  --pw-btn-bg-2: #a6bacf;
+  --pw-btn-stroke: #536986;
+
+  /* polka knobs */
+  --pw-dot-color: rgba(255,255,255,.17);
+  --pw-dot-size: 2px;
+  --pw-dot-gap: 13px;
+  --pw-dot-fade-start: 10%;
+
+  /* FAB size */
+  --chat-fab-size: 84px;
 }
 
-/* wrapper owns the frame */
+/* ---------- page background (footer aligned bottom) ---------- */
+body.chat-theme{
+  background-image:
+    var(--footer-image),
+    var(--page-wallpaper),
+    linear-gradient(180deg, #edf4ff 0%, #f7fbff 60%, #eef2f8 100%);
+  background-repeat:  no-repeat, no-repeat, no-repeat;
+  background-position: center bottom, center center, center;
+  background-size:     100% auto,   cover,         auto;
+  background-attachment: scroll,    fixed,         fixed;
+  position: relative;
+}
+#root, main, .app { position: relative; z-index: 1; }
+
+/* ---------- window wrapper ---------- */
 .chattable-wrapper.pixel-window{
   position: relative;
   display: flex;
   flex-direction: column;
   width: min(90%, 800px);
-  height: 600px;
+  min-height: 260px;
+  max-height: 650px;
   margin: 40px auto;
   background: var(--pw-bg);
-  border: 5px solid var(--pw-outline-1);     /* visible box border */
-  border-radius: 2px;
-  box-shadow: 0 10px 22px var(--pw-shadow);
-  overflow: hidden;                           /* keep edges crisp */
+  border: 1px solid var(--pw-outline-1);
+  border-top-right-radius: 12px;
+  box-shadow: 0 14px 28px var(--pw-shadow);
+  overflow: hidden;
 }
-
-/* inner bevel (double-border look) */
 .chattable-wrapper.pixel-window::before{
   content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 10px;
-  box-shadow: inset 0 0 0 0px var(--pw-outline-2);
+  position: absolute; inset: 0;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 0 var(--pw-outline-2);
   pointer-events: none;
   z-index: 0;
 }
 
-/* titlebar */
+/* ---------- titlebar ---------- */
 .pw-titlebar{
   position: relative;
   z-index: 1;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  height: 40px;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 0 10px;
   color: var(--pw-title-text);
-  font-weight: 700;
-  text-shadow: 1px 1px 0 #31165f;
   background:
-    linear-gradient(180deg, var(--pw-title-1), var(--pw-title-2)),
-    repeating-linear-gradient(135deg, rgba(255,255,255,.08) 0 2px, transparent 2px 4px);
+    linear-gradient(180deg, var(--pw-title-1), var(--pw-title-2), var(--pw-title-3), var(--pw-title-4)),
+    radial-gradient(75% 50% at 50% 0%, rgba(255,255,255,.25), transparent);
+  text-shadow: 0 1px 0 rgba(0,0,0,.25);
+  cursor: grab; touch-action: none;
+  isolation: isolate;
+  overflow: hidden;
+}
+.pixel-window.dragging .pw-titlebar{ cursor: grabbing; }
+
+/* polka dots on titlebar (fade right) */
+.pw-titlebar::after{
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 0;
+  background-image:
+    radial-gradient(var(--pw-dot-color) var(--pw-dot-size), transparent calc(var(--pw-dot-size) + 1px)),
+    radial-gradient(var(--pw-dot-color) var(--pw-dot-size), transparent calc(var(--pw-dot-size) + 1px));
+  background-size:
+    var(--pw-dot-gap) var(--pw-dot-gap),
+    var(--pw-dot-gap) var(--pw-dot-gap);
+  background-position:
+    0 0,
+    calc(var(--pw-dot-gap)/2) calc(var(--pw-dot-gap)/2);
+  opacity: .75;
+  -webkit-mask-image: linear-gradient(to right, #000 var(--pw-dot-fade-start), rgba(0,0,0,0) 100%);
+          mask-image: linear-gradient(to right, #000 var(--pw-dot-fade-start), rgba(0,0,0,0) 100%);
 }
 
-/* title + window buttons */
-.pw-title{ font-family: MS Gothic, "MSGothic"; letter-spacing:.3px; }
-.pw-controls{ display:flex; gap:6px; }
+/* title text + pill */
+.pw-title{
+  position: relative; z-index: 1;
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: 4px 10px; border-top-right-radius: 999px; line-height: 1;
+  font-family: "Aldrich", system-ui, sans-serif; letter-spacing: .3px;
+  background: linear-gradient(0deg, #000 0%, #93c1ec 90%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.pw-title::before{
+  content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(220,241,255,.35), rgba(84,135,158,.08)) padding-box,
+    linear-gradient(180deg, #f7faff, #b9c0ca) border-box;
+  border: 1px solid transparent;
+  box-shadow: 0 3px 2px rgba(17,27,22,.18), inset 0 0 0 1px rgba(143,207,207,.28);
+}
+
+/* ---------- window controls ---------- */
+.pw-controls{ display: flex; gap: 6px; z-index: 1; }
 .pw-btn{
-  width:20px; height:20px;
-  border:1px solid var(--pw-btn-stroke);
-  border-radius:3px;
+  width: 20px; height: 20px;
+  border: 1px solid var(--pw-btn-stroke);
+  border-radius: 3px;
   background: linear-gradient(180deg, var(--pw-btn-bg-1), var(--pw-btn-bg-2));
-  box-shadow: inset 0 1px 0 #fff3;
-  position:relative;
+  box-shadow: inset 0 1px 0 #fff6;
+  position: relative;
 }
-.pw-btn::after{ content:""; position:absolute; inset:0; display:grid; place-items:center; font-size:9px; color:#2b0a55; font-weight:900; }
-.pw-min::after{ content:"—"; line-height:12px; }
-.pw-max::after{ content:"☐"; }
-.pw-close::after{ content:"✕"; background-color: rgb(165, 71, 71);}
+.pw-btn::after{
+  content: ""; position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: 9px; color: #4a5c74; font-weight: 900;
+}
+.pw-min::after{ content: "—"; line-height: 12px; }
+.pw-max::after{ content: "☐"; }
+.pw-close::after{ content: "✕"; }
 
-/* body area */
+/* ---------- body + status ---------- */
 .pw-body{
   position: relative; z-index: 1;
-  flex: 1 1 auto;
-  padding: 8px;
+  flex: 1 1 auto; padding: 0;
+  background-image: linear-gradient(90deg, #fafbfb 0%, #f7f7f7 50%, #fafbfb 100%);
+  border-top: 1px solid #dbe3ec;
 }
+#chattable{ width: 100%; height: 100%; border: 0; background: transparent; }
 
-/* iframe fills body */
-#chattable{ width:100%; height:100%; border:0; background:transparent; }
-
-/* bottom decor / status bar */
 .pw-status{
-  position: relative;
-  z-index: 1;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  position: relative; z-index: 1;
+  height: 22px; display: flex; align-items: center; gap: 10px;
   padding: 0 10px;
-  background:
-    linear-gradient(180deg, #152436, #1d1f20);
-  border-top: 1px solid #324452;             /* subtle separator */
-}
-
-/* little grip + led to match the reference look */
-.pw-grip{
-  width: 44px; height: 12px;
-  background:
-    repeating-linear-gradient(90deg, #222b2c 0 6px, #365779 6px 12px);
-  border: 1px solid #080808;
-  border-radius: 3px;
-  box-shadow: inset 0 1px 0 #ffffff1a;
+  background-image: linear-gradient(90deg, #f0f2f5 0%, #e9edf3 50%, #f0f2f5 100%);
+  border-top: 1px solid #d1dae6;
 }
 .pw-led{
   width: 8px; height: 8px; border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #24ff85, #0aac54);
-  box-shadow: 0 0 6px #24ff85aa;
+  background: radial-gradient(circle at 30% 30%, #95c7ff, #1a85cc);
+  box-shadow: 0 0 6px #25afffaa;
 }
 .pw-hint{
-  font-size: 12px;
-  color: #cfe7ff;
-  font-family: MS Gothic, "MSGothic";
-  opacity: .85;
+  font-size: 12px; color: #3b5678;
+  font-family: "Aldrich", system-ui, sans-serif; opacity: .85;
 }
 
-/* hide Chattable's header so only wrapper's titlebar shows */
-#top_banner{ display:none !important; }
+/* ---------- animations ---------- */
+@keyframes win95-shrink{ to{ transform: scale(0.1); opacity: 0; filter: blur(1px); } }
+.shrink-close{ transform-origin: bottom right; animation: win95-shrink 160ms ease-in forwards; }
+.shrink-min  { transform-origin: bottom right; animation: win95-shrink 160ms ease-in forwards; }
+@media (max-width: 768px){
+  .shrink-close, .shrink-min{ animation: none !important; transform: none !important; }
+}
+
+/* ---------- resize handles ---------- */
+.pw-resize-e, .pw-resize-s, .pw-resize-se{ position: absolute; z-index: 1; }
+.pw-resize-e  { right: 0; top: 16px; bottom: 16px; width: 8px;  cursor: ew-resize; }
+.pw-resize-s  { left: 16px; right: 16px; bottom: 0; height: 8px; cursor: ns-resize; }
+.pw-resize-se { right: 0; bottom: 0; width: 14px; height: 14px; cursor: nwse-resize; }
+.pw-resize-e:hover, .pw-resize-s:hover, .pw-resize-se:hover{ background: rgba(255,255,255,0); }
+@media (max-width: 768px){
+  .pw-resize-e, .pw-resize-s, .pw-resize-se{ display: none !important; }
+}
+
+/* ---------- FAB (always visible, borderless) ---------- */
+.chat-fab{
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 10001;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  line-height: 0;
+  cursor: pointer;
+  display: inline-block;
+  transition: transform .12s ease;
+}
+.chat-fab img{
+  display: block;
+  width: var(--chat-fab-size);
+  height: var(--chat-fab-size);
+  object-fit: contain;
+  border-radius: 50%;
+  pointer-events: none;
+  user-select: none;
+}
+.chat-fab:hover{ transform: translateY(-1px); }
+.chat-fab:active{ transform: translateY(0); }
+
+/* ---------- keep iframe alive when hidden ---------- */
+.chat-hidden{
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+.chat-hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+@media (max-width: 768px) {
+  .chat-fab { display: none !important; }
+}
