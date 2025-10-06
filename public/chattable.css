@@ -1,5 +1,4 @@
 :root{
-  /* avatars */
   --pfp-size: 40px;
   --pfp-outline: #AAA;
 
@@ -10,17 +9,17 @@
   --pfp-4: url("https://files.catbox.moe/igrgt6.jpg");
   --pfp-5: url("https://files.catbox.moe/rp8su2.jpg");
 
-  /* message width */
   --row-gap: 10px;
   --msg-max-ch: 54ch;
 
-  /* GIF emoji sizes */
   --gif-emoji-size: 72px;
   --gif-emoji-only-size: 120px;
 
-  /* emoji picker */
-  --emoji-icon: 32px; 
+  --emoji-icon: 32px;
   --emoji-hit: 40px;
+
+  --icon-gap: 4px;
+  --bubble-edge: 8px;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Aldrich&display=swap');
@@ -30,11 +29,11 @@
   src: url("https://YOUR-DOMAIN.com/media/ms-gothic.ttf") format("truetype");
   font-display: swap;
 }
+
 body{ font-family: MS Gothic, "MSGothic"; font-smooth: never; color:#000; }
 a{ color:#88F; }
 #top_banner{ display:none !important; }
 
-/* Background (absolute) */
 #background, #settingsMenu{
   background-image: url("https://files.catbox.moe/4lkpgy.jpg");
   background-size: 100% auto;
@@ -42,6 +41,7 @@ a{ color:#88F; }
   background-attachment: scroll;
   background-position: center 50%;
 }
+
 .msgWrapper{
   position: relative;
   display: flex;
@@ -51,108 +51,98 @@ a{ color:#88F; }
   gap: var(--row-gap);
   overflow: visible;
 }
+.msgWrapper:has(.sent){ flex-direction: row-reverse; }
+.msgWrapper:has(.received), .msgWrapper:has(.recieved){ flex-direction: row; }
+.msgWrapper + .msgWrapper{ margin-top:25px; margin-bottom:15px; }
 
 .msgWrapper:has(.allMessages)::before{
-  content: "";
+  content:"";
   width: var(--pfp-size);
   height: var(--pfp-size);
   flex: 0 0 var(--pfp-size);
-  border-radius: 0;                 /* square */
+  border-radius: 0;
   background-color: #FFF;
   background-image: var(--pfp-sprite, var(--pfp-default-url));
   background-size: cover;
   background-position: center;
   outline: 1px solid var(--pfp-outline);
-  margin: 0; float: none;
 }
 
-/* sent on right side */
-.msgWrapper:has(.sent){ flex-direction: row-reverse; }
-
-/* bubble */
 .allMessages{
-  background-color:#FFF;
-  box-shadow: 0 0 4px #FFF, 0 0 4px #FFF, 0 0 4px #FFF, 0 0 4px #FFF, 0 0 4px #FFF, 0 3px 4px #005;
-  border:1px solid #88F;
-  border-radius:8px;
-  margin:0 20px;
   position:relative;
+  background-image: linear-gradient(90deg, #ffffff 0%, #fbfcfe 50%, #ffffff 100%);
+  border: 1.5px solid #c9d1dd;
+  color: #4a5566;
+  box-shadow: 0 6px 14px rgba(129,161,200,.22), inset 0 0 4px rgba(255,255,255,.45);
+  border-radius:8px;
+  margin:0 var(--bubble-edge);
   box-sizing:border-box;
-
-  /* width cap */
   flex:0 1 auto;
   min-width:0;
   max-width: clamp(32ch, calc(100% - var(--pfp-size) - var(--row-gap)), var(--msg-max-ch));
 }
-.allMessages.containsOnlyEmojis .emoji{ height:50px; }
-.msgWrapper + .msgWrapper{ margin-top:25px; margin-bottom:15px; }
+.allMessages:hover{
+  border-color: #a7d5ff;
+  box-shadow: 0 8px 20px rgba(129,161,200,.30), inset 0 0 0 1px rgba(255,255,255,.35);
+}
 
-/* PM ribbon */
-.msgWrapper:has(.pm){ padding-top:26px; }
-.allMessages.pm{ border-color:#F55; }
+.msgWrapper:has(.received) > .allMessages,
+.msgWrapper:has(.recieved) > .allMessages{ margin-left: 2px; }
+.msgWrapper:has(.sent) > .allMessages{ margin-right: 2px; }
+
+.sent{
+  background-image: linear-gradient(90deg, #e9f4ff 0%, #f2f8ff 100%);
+  color: #2d3a49;
+  border-color: #b7cbe3;
+}
+.received, .recieved{
+  background-image: linear-gradient(90deg, #fefefe 0%, #f6f8fb 100%);
+  color: #2b3340;
+  border-color: #d2d8e2;
+}
+
+.allMessages.pm{ border-color:#8bb4ff; }
 .allMessages.pm:after{
   content:"Private Message";
   display:flex; align-items:center; justify-content:center;
-  background-color:#F55; color:#FFF;
+  background: linear-gradient(180deg, #8bb4ff, #a7d5ff);
+  color:#0f2438;
   height:16px; padding:5px;
   position:absolute; right:5vw; bottom:100%; z-index:5;
-  border-radius:5px 5px 0 0;
+  border-radius:6px 6px 0 0;
+  border:1px solid #8fa6c4;
+  box-shadow:0 2px 6px rgba(129,161,200,.25), inset 0 0 0 1px rgba(255,255,255,.35);
 }
 
-/* tails */
-.sent{
-  border-radius:5px 5px 0 5px;
-  background-color:rgb(199,233,255);
-  color:#111;
-}
-.sent:after{
-  content:"";
-  background-color:inherit;
-  height:10px; width:10px;
-  position:absolute; right:-6px; bottom:6px;
-  transform:rotateZ(45deg);
-  border-radius:0 2px 0 0;
-  border-right:1px solid #000; border-top:1px solid #000;
-}
-.recieved, .received{
-  border-radius:5px 5px 5px 0;
-  background-color:rgb(255,255,183);
-  color:#000;
-}
-.recieved:after, .received:after{
-  content:"";
-  background-color:inherit;
-  height:10px; width:10px;
-  position:absolute; left:-6px; bottom:6px;
-  transform:rotateZ(45deg);
-  border-radius:0 0 0 2px;
-  border-left:1px solid #000; border-bottom:1px solid #000;
-}
+#timestamp{ font-size:8pt; margin-top:10px !important; padding-left:30px; color:#7f8fa3; }
 
-/* timestamp */
-#timestamp{ font-size:8pt; margin-top:10px !important; padding-left:30px; }
-
-/* inputs */
 #input, #nameEntry{
-  background-color:#FFF;
+  background:#fbfcfe;
+  border-top:1px solid #dbe3ec;
+  color:#4a5566;
   border-radius:0;
-  border-top:1px solid #AAF;
   font-family: MS Gothic, "MSGothic";
 }
-#name{ background-color:#FFF; border-radius:0; border:1px solid #88F; padding:2px; font-family: MS Gothic, "MSGothic"; }
-
-#emojiTrayToggle{
-  height:20x; width:20px; padding:0px; margin-top:1px; margin-left:3px;
-  align-self: center;
-   border-radius: 0 !important;
-  background-image: url("https://files.catbox.moe/2qm2sm.jpg") !important;
+#name{
+  background:#ffffff;
+  border:1px solid #c9d1dd;
+  color:#2b3340;
+  border-radius:0;
+  padding:2px;
+  font-family: MS Gothic, "MSGothic";
 }
 
-/* typing pill */
+#emojiTrayToggle{
+  height:20px; width:20px; padding:0; margin-top:1px; margin-left:3px;
+  align-self:center;
+  border-radius:0 !important;
+  background-image:url("https://files.catbox.moe/2qm2sm.jpg") !important;
+}
+
 #is_typing{
   filter: drop-shadow(0 0 1px #FFF) drop-shadow(0 0 1px #FFF) drop-shadow(0 0 1px #FFF);
-  background-color:#FFF;
-  border:1px solid #AAF;
+  background:#f4f8ff;
+  border:1px solid #cfe0f3;
   border-radius:3px;
   left:unset; right:10px; bottom:27px;
   overflow:visible;
@@ -164,15 +154,14 @@ a{ color:#88F; }
   position:fixed; right:35px; bottom:0; width:50vw;
   color:#000; z-index:100000;
 }
-#is_typing > span{ background-color:#AAF; border-radius:0; height:2px; width:2px; }
+#is_typing > span{ background-color:#81a1c8; border-radius:0; height:2px; width:2px; }
 
-img.emoji{ height:1.1em; width:auto; max-width:100%; vertical-align:-0.2em; }
+img.emoji{ height:1.1em; width:auto; max-width:100%; vertical-align:-0.2em; image-rendering:auto; }
 img.emoji[src$=".gif"],
 img.emoji[src*=".gif?" i],
-.msgBody img[src$=".gif"] {
-  backface-visibility: hidden;
-  transform: translateZ(0);
-  image-rendering: auto;
+.msgBody img[src$=".gif"]{
+  backface-visibility:hidden;
+  transform:translateZ(0);
 }
 img.emoji[src*="format=gif" i]{ display:inline-block; height:var(--gif-emoji-size); width:auto; vertical-align:middle; }
 .allMessages.containsOnlyEmojis img.emoji[src$=".gif"],
@@ -194,29 +183,26 @@ img.emoji[src*="format=gif" i]{ display:inline-block; height:var(--gif-emoji-siz
 #emojiTray img.emojiInGrid:hover{ transform: scale(1.08); }
 @media (pointer: coarse){ :root{ --emoji-icon:36px; --emoji-hit:48px; } }
 
-/* Owner (replace UID + URL) */
 .msgWrapper:has(.allMessages[uid="OWNER_UID_HERE"])::before{
   --pfp-sprite: url("https://YOUR-DOMAIN.com/avatars/owner.png");
 }
 
-/* Uppercase A..Z buckets */
 .msgWrapper:has(.allMessages[uid$="A"]), .msgWrapper:has(.allMessages[uid$="F"]), .msgWrapper:has(.allMessages[uid$="K"]),
 .msgWrapper:has(.allMessages[uid$="P"]), .msgWrapper:has(.allMessages[uid$="U"]), .msgWrapper:has(.allMessages[uid$="Z"])
-{ --pfp-sprite: var(--pfp-1); } /* mod 0 */
+{ --pfp-sprite: var(--pfp-1); }
 .msgWrapper:has(.allMessages[uid$="B"]), .msgWrapper:has(.allMessages[uid$="G"]), .msgWrapper:has(.allMessages[uid$="L"]),
 .msgWrapper:has(.allMessages[uid$="Q"]), .msgWrapper:has(.allMessages[uid$="V"])
-{ --pfp-sprite: var(--pfp-2); } /* mod 1 */
+{ --pfp-sprite: var(--pfp-2); }
 .msgWrapper:has(.allMessages[uid$="C"]), .msgWrapper:has(.allMessages[uid$="H"]), .msgWrapper:has(.allMessages[uid$="M"]),
 .msgWrapper:has(.allMessages[uid$="R"]), .msgWrapper:has(.allMessages[uid$="W"])
-{ --pfp-sprite: var(--pfp-3); } /* mod 2 */
+{ --pfp-sprite: var(--pfp-3); }
 .msgWrapper:has(.allMessages[uid$="D"]), .msgWrapper:has(.allMessages[uid$="I"]), .msgWrapper:has(.allMessages[uid$="N"]),
 .msgWrapper:has(.allMessages[uid$="S"]), .msgWrapper:has(.allMessages[uid$="X"])
-{ --pfp-sprite: var(--pfp-4); } /* mod 3 */
+{ --pfp-sprite: var(--pfp-4); }
 .msgWrapper:has(.allMessages[uid$="E"]), .msgWrapper:has(.allMessages[uid$="J"]), .msgWrapper:has(.allMessages[uid$="O"]),
 .msgWrapper:has(.allMessages[uid$="T"]), .msgWrapper:has(.allMessages[uid$="Y"])
-{ --pfp-sprite: var(--pfp-5); } /* mod 4 */
+{ --pfp-sprite: var(--pfp-5); }
 
-/* Lowercase a..z buckets */
 .msgWrapper:has(.allMessages[uid$="d"]), .msgWrapper:has(.allMessages[uid$="i"]), .msgWrapper:has(.allMessages[uid$="n"]),
 .msgWrapper:has(.allMessages[uid$="s"]), .msgWrapper:has(.allMessages[uid$="x"])
 { --pfp-sprite: var(--pfp-1); }
@@ -233,7 +219,6 @@ img.emoji[src*="format=gif" i]{ display:inline-block; height:var(--gif-emoji-siz
 .msgWrapper:has(.allMessages[uid$="r"]), .msgWrapper:has(.allMessages[uid$="w"])
 { --pfp-sprite: var(--pfp-5); }
 
-/* Digits 0..9 buckets */
 .msgWrapper:has(.allMessages[uid$="2"]), .msgWrapper:has(.allMessages[uid$="7"])
 { --pfp-sprite: var(--pfp-1); }
 .msgWrapper:has(.allMessages[uid$="3"]), .msgWrapper:has(.allMessages[uid$="8"])
@@ -248,29 +233,11 @@ img.emoji[src*="format=gif" i]{ display:inline-block; height:var(--gif-emoji-siz
 .msgWrapper:has(.allMessages[uid="5gEihn1Sa4U67Nw6h2gwIOuclk53"])::before{ --pfp-sprite: var(--pfp-default-url); }
 .msgWrapper:has(.allMessages[uid="2dwZ0F9l78XtokxNE4mSmeG7H372"])::before{ --pfp-sprite: var(--pfp-2); }
 
-.msgWrapper:has(.received),
-.msgWrapper:has(.recieved) {
-  flex-direction: row;
-}
-
-.msgWrapper:has(.sent) {
-  flex-direction: row-reverse;
-}
-
-.msgWrapper:has(.received)::before,
-.msgWrapper:has(.recieved)::before {
-  transform: scaleX(-1);
-}
-
-
-
 #background{
   scrollbar-width: thin;
   scrollbar-color: #81a1c8 #eef3fa;
   scrollbar-gutter: stable both-edges;
 }
-
-/* Chrome/Edge/Safari */
 #background::-webkit-scrollbar{ width: 12px; height: 12px; }
 #background::-webkit-scrollbar-track{
   background: #eef3fa;
@@ -282,17 +249,13 @@ img.emoji[src*="format=gif" i]{ display:inline-block; height:var(--gif-emoji-siz
   border-radius: 8px;
   box-shadow: inset 0 0 2px rgba(255,255,255,.45);
 }
-#background::-webkit-scrollbar-thumb:hover{
-  background: linear-gradient(180deg, #9cc3ff, #bde3ff);
-}
+#background::-webkit-scrollbar-thumb:hover{ background: linear-gradient(180deg, #9cc3ff, #bde3ff); }
 #background::-webkit-scrollbar-corner{ background:#eef3fa; }
-
-/* optional arrows, styled to match */
 #background::-webkit-scrollbar-button{
-  display: block;
-  width: 12px; height: 12px;
-  background: #eef3fa;
-  border: 1px solid #d5dde8;
+  display:block;
+  width:12px; height:12px;
+  background:#eef3fa;
+  border:1px solid #d5dde8;
 }
 #background::-webkit-scrollbar-button:single-button:vertical:decrement{
   background:
@@ -304,237 +267,3 @@ img.emoji[src*="format=gif" i]{ display:inline-block; height:var(--gif-emoji-siz
     #eef3fa center/8px 8px no-repeat
     url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><polygon points='2,3 8,3 5,7' fill='%2381a1c8'/></svg>");
 }
-
-/* --- MESSAGE BOX THEME (blue–silver) -------------------------------- */
-
-/* avatar outline to match frame */
-.msgWrapper:has(.allMessages)::before{
-  outline-color: #8fa6c4;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.6);
-}
-
-/* base bubble */
-.allMessages{
-  background-image: linear-gradient(90deg, #ffffff 0%, #fbfcfe 50%, #ffffff 100%);
-  border: 1.5px solid #c9d1dd;
-  color: #4a5566;
-  box-shadow:
-    0 6px 14px rgba(129,161,200,.22),
-    inset 0 0 4px rgba(255,255,255,.45);
-}
-.allMessages:hover{
-  border-color: #a7d5ff;
-  box-shadow:
-    0 8px 20px rgba(129,161,200,.30),
-    inset 0 0 0 1px rgba(255,255,255,.35);
-}
-
-/* sent (right) */
-.sent{
-  background-image: linear-gradient(90deg, #e9f4ff 0%, #f2f8ff 100%);
-  color: #2d3a49;
-  border-color: #b7cbe3;
-}
-.sent:after{
-  border-right: 1px solid #a0b5d1;
-  border-top:   1px solid #a0b5d1;
-}
-.sent:hover:after{
-  border-right: 1px solid #81a1c8;
-  border-top:   1px solid #81a1c8;
-}
-
-/* received (left) */
-.recieved, .received{
-  background-image: linear-gradient(90deg, #fefefe 0%, #f6f8fb 100%);
-  color: #2b3340;
-  border-color: #d2d8e2;
-}
-.recieved:after, .received:after{
-  border-left:   1px solid #a0b5d1;
-  border-bottom: 1px solid #a0b5d1;
-}
-.recieved:hover:after, .received:hover:after{
-  border-left:   1px solid #81a1c8;
-  border-bottom: 1px solid #81a1c8;
-}
-
-/* PM ribbon */
-.allMessages.pm{ border-color:#8bb4ff; }
-.allMessages.pm:after{
-  content:"Private Message";
-  background: linear-gradient(180deg, #8bb4ff, #a7d5ff);
-  color:#0f2438;
-  border-radius: 6px 6px 0 0;
-  border: 1px solid #8fa6c4;
-  box-shadow: 0 2px 6px rgba(129,161,200,.25), inset 0 0 0 1px rgba(255,255,255,.35);
-}
-
-/* timestamp + inputs to match */
-#timestamp{ color:#7f8fa3; }
-#input, #nameEntry{
-  background:#fbfcfe;
-  border-top:1px solid #dbe3ec;
-  color:#4a5566;
-}
-#name{
-  background:#ffffff;
-  border:1px solid #c9d1dd;
-  color:#2b3340;
-}
-
-/* typing pill */
-#is_typing{
-  background:#f4f8ff;
-  border:1px solid #cfe0f3;
-}
-#is_typing > span{ background-color:#81a1c8; }
-
-/* emoji GIFs keep smooth scaling */
-.allMessages img.emoji{ image-rendering:auto; }
-
-
-/* ensure anchor */
-.allMessages{ position: relative; }
-
-/* SENT (right) — border triangle behind + fill triangle in front */
-.sent::before,
-.sent::after,
-.received::before,
-.received::after,
-.recieved::before,
-.recieved::after{
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  width: 0; height: 0;           /* triangles, not boxes */
-  background: none !important;    /* kill the old diamond fill */
-  z-index: 0;                     /* under bubble content */
-}
-
-/* right tail border (slightly larger, under) */
-.sent::before{
-  right: -9px; bottom: 9px;
-  border-style: solid;
-  border-width: 9px 0 0 9px;      /* top=0, left forms the triangle */
-  border-color: transparent transparent transparent #b7cbe3; /* border tone */
-}
-
-/* right tail fill (on top of border) */
-.sent::after{
-  right: -8px; bottom: 10px;
-  border-style: solid;
-  border-width: 8px 0 0 8px;
-  border-color: transparent transparent transparent #e9f4ff; /* matches .sent bg */
-}
-
-/* RECEIVED (left) — mirror it */
-
-/* left tail border */
-.received::before, .recieved::before{
-  left: -9px; bottom: 9px;
-  border-style: solid;
-  border-width: 9px 9px 0 0;      /* top-left triangle */
-  border-color: #d2d8e2 transparent transparent transparent;
-}
-
-/* left tail fill */
-.received::after, .recieved::after{
-  left: -8px; bottom: 10px;
-  border-style: solid;
-  border-width: 8px 8px 0 0;
-  border-color: #f6f8fb transparent transparent transparent;  /* matches received bg */
-}
-
-/* optional: hover accent on the thin border only */
-.sent:hover::before{  border-left-color: #81a1c8; }
-.received:hover::before,
-.recieved:hover::before{ border-top-color: #81a1c8; }
-
-/* --- correct tail orientation (no diamonds, no overlap) --- */
-.allMessages{ position: relative; }
-
-/* reset any old diamond styles */
-.sent::after, .recieved::after, .received::after{
-  width: 0; height: 0; background: none; transform: none;
-  box-shadow: none;
-}
-
-/* SENT (right) — point OUT to the right */
-.sent::before{  /* thin border outline under the fill */
-  content: "";
-  position: absolute; right: -9px; bottom: 9px;
-  width: 0; height: 0; pointer-events: none;
-  border-style: solid;
-  border-width: 9px 9px 9px 0;                          /* top right bottom left */
-  border-color: transparent #b7cbe3 transparent transparent; /* border tone */
-}
-.sent::after{   /* fill triangle */
-  content: "";
-  position: absolute; right: -8px; bottom: 10px;
-  width: 0; height: 0; pointer-events: none;
-  border-style: solid;
-  border-width: 8px 8px 8px 0;
-  border-color: transparent #e9f4ff transparent transparent; /* matches .sent bg */
-}
-
-/* RECEIVED (left) — point OUT to the left */
-.recieved::before, .received::before{
-  content: "";
-  position: absolute; left: -9px; bottom: 9px;
-  width: 0; height: 0; pointer-events: none;
-  border-style: solid;
-  border-width: 9px 0 9px 9px;                          /* top right bottom left */
-  border-color: transparent transparent transparent #d2d8e2;
-}
-.recieved::after, .received::after{
-  content: "";
-  position: absolute; left: -8px; bottom: 10px;
-  width: 0; height: 0; pointer-events: none;
-  border-style: solid;
-  border-width: 8px 0 8px 8px;
-  border-color: transparent transparent transparent #f6f8fb; /* matches received bg */
-}
-
-/* optional: subtle hover accent on the thin outline */
-.sent:hover::before{ border-right-color: #81a1c8; }
-.recieved:hover::before, .received:hover::before{ border-left-color: #81a1c8; }
-
-/* --- remove all message tails completely --- */
-.sent:after, .sent::after, .sent:before, .sent::before,
-.received:after, .received::after, .received:before, .received::before,
-.recieved:after, .recieved::after, .recieved:before, .recieved::before{
-  content: none !important;   /* don't generate the pseudo-elements */
-  display: none !important;   /* extra belt-and-suspenders */
-}
-
-/* make both sides use the same rounded corners */
-.sent, .received, .recieved{
-  border-radius: 8px !important;  /* or 10px if you want softer */
-}
-
-/* keep spacing from avatars the same (adjust if needed) */
-.allMessages{ margin: 0 20px; }
-/* --- tighter icon ↔ message spacing --- */
-
-/* 1) smaller flex gap between avatar (::before) and bubble */
-:root{
-  --icon-gap: 4px;          /* was 10px */
-  --bubble-edge: 8px;       /* outer margin to container edges */
-}
-.msgWrapper{ gap: var(--icon-gap); }
-
-/* 2) trim the bubble margins (your rule had margin: 0 20px) */
-.allMessages{ margin: 0 var(--bubble-edge); }
-
-/* 3) near the avatar side, cut the margin almost to zero */
-.msgWrapper:has(.received) > .allMessages,
-.msgWrapper:has(.recieved) > .allMessages{  /* avatar on LEFT */
-  margin-left: 2px;
-}
-
-.msgWrapper:has(.sent) > .allMessages{      /* avatar on RIGHT */
-  margin-right: 2px;
-}
-
-/* (optional) if you want it even tighter, set both to 0px instead of 2px */

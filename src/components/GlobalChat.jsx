@@ -1,14 +1,15 @@
 // src/components/GlobalChat.jsx
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import "../styles/stuff.css";
 
 export default function GlobalChat() {
   const wrapRef = useRef(null);
+  const { pathname } = useLocation();
+  const isCommission = pathname.toLowerCase().startsWith("/commission");
 
-  /* ---------- Load chattable script once & init (docs style) ---------- */
   useEffect(() => {
     let cancelled = false;
-
     const load = (src) =>
       new Promise((res, rej) => {
         if (document.querySelector(`script[data-chattable-src="${src}"]`)) { res(); return; }
@@ -20,7 +21,6 @@ export default function GlobalChat() {
         s.onerror = rej;
         document.head.appendChild(s);
       });
-
     (async () => {
       try {
         try { await load("https://iframe.chat/scripts/main.min.js"); }
@@ -32,12 +32,9 @@ export default function GlobalChat() {
         }
       } catch {}
     })();
-
     return () => { cancelled = true; };
   }, []);
-  /* ------------------------------------------------------------------- */
 
-  /* ---------- Mobile detection ---------- */
   const [isMobile, setIsMobile] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches
   );
@@ -53,31 +50,26 @@ export default function GlobalChat() {
       mql.removeListener?.(onChange);
     };
   }, []);
-  /* ------------------------------------- */
 
-  // limits
   const MIN_W = 350, MAX_W = 960;
   const MIN_H = 260, MAX_H = 800;
   const EDGE_PAD = 0;
 
-  // window state
   const [pos,  setPos]  = useState({ x: 120, y: 120 });
   const [size, setSize] = useState({ w: 360, h: 520 });
-  const [open, setOpen] = useState(false); // start hidden
-  const [anim, setAnim] = useState("");    // "", "minimizing", "closing"
+  const [open, setOpen] = useState(false);
+  const [anim, setAnim] = useState("");
 
-  // drag/resize refs
   const draggingRef  = useRef(false);
   const startPosRef  = useRef({ x: 0, y: 0 });
   const startPtrRef  = useRef({ x: 0, y: 0 });
   const resizingRef  = useRef(false);
-  const resizeDirRef = useRef(null);   // "e" | "s" | "se"
+  const resizeDirRef = useRef(null);
   const startSizeRef = useRef({ w: 0, h: 0 });
   const rafIdRef     = useRef(0);
   const pendingSizeRef = useRef(null);
   const SNAP = 1;
 
-  /* ---------- helpers ---------- */
   const viewportSize = () => {
     const de = document.documentElement;
     return { vw: de.clientWidth, vh: de.clientHeight };
@@ -103,9 +95,8 @@ export default function GlobalChat() {
     return { w: cw, h: ch };
   };
 
-  const FAB_GAP = 64; // ← raise/lower the window by changing this number
+  const FAB_GAP = 64;
 
-  // live size of the window even when hidden (visibility:hidden still has layout)
   const liveWindowSize = () => {
     const el = wrapRef.current;
     if (el) {
@@ -116,24 +107,19 @@ export default function GlobalChat() {
     return { w: size.w, h: size.h };
   };
 
-  // snap above FAB
   const anchorToFab = (gap = FAB_GAP) => {
     const { w, h } = liveWindowSize();
     const fab = document.querySelector(".chat-fab");
-
     if (fab && fab.getBoundingClientRect) {
-      const r = fab.getBoundingClientRect();      // viewport coords of FAB
-      const x = Math.round(r.right - w);          // align right edges
-      const y = Math.round(r.top - gap - h);      // sit 'gap' px above FAB
+      const r = fab.getBoundingClientRect();
+      const x = Math.round(r.right - w);
+      const y = Math.round(r.top - gap - h);
       return clampPosToViewport(x, y, w, h);
     }
-
-    // Fallback: bottom-right of viewport if FAB not found
     const { vw, vh } = viewportSize();
     return clampPosToViewport(vw - w - 16, vh - h - 16 - 84 - gap, w, h);
   };
 
-  /* ---------- restore & persist pos/size ---------- */
   useEffect(() => {
     try {
       const raw = localStorage.getItem("chatWin");
@@ -147,7 +133,6 @@ export default function GlobalChat() {
     try { localStorage.setItem("chatWin", JSON.stringify({ pos, size })); } catch {}
   }, [pos, size]);
 
-  /* ---------- clamp on first paint & on viewport resize ---------- */
   useLayoutEffect(() => {
     const s = clampSizeToLimits(size.w, size.h, pos.x, pos.y);
     const p = clampPosToViewport(pos.x, pos.y, s.w, s.h);
@@ -168,7 +153,6 @@ export default function GlobalChat() {
   useEffect(() => {
     const onPointerMove = (e) => {
       let handled = false;
-
       if (draggingRef.current) {
         const dx = e.clientX - startPtrRef.current.x;
         const dy = e.clientY - startPtrRef.current.y;
@@ -177,7 +161,6 @@ export default function GlobalChat() {
         setPos(clampPosToViewport(next.x, next.y, w, h));
         handled = true;
       }
-
       if (resizingRef.current) {
         const dx = e.clientX - startPtrRef.current.x;
         const dy = e.clientY - startPtrRef.current.y;
@@ -185,7 +168,6 @@ export default function GlobalChat() {
         let newH = startSizeRef.current.h;
         if (resizeDirRef.current === "e"  || resizeDirRef.current === "se") newW += dx;
         if (resizeDirRef.current === "s"  || resizeDirRef.current === "se") newH += dy;
-
         let clamped = clampSizeToLimits(newW, newH, pos.x, pos.y);
         clamped = { w: Math.round(clamped.w / SNAP) * SNAP, h: Math.round(clamped.h / SNAP) * SNAP };
         pendingSizeRef.current = clamped;
@@ -197,10 +179,8 @@ export default function GlobalChat() {
         }
         handled = true;
       }
-
       if (handled) e.preventDefault();
     };
-
     const onPointerUp = () => {
       if (draggingRef.current || resizingRef.current) {
         draggingRef.current = false;
@@ -212,7 +192,6 @@ export default function GlobalChat() {
         pendingSizeRef.current = null;
       }
     };
-
     document.addEventListener("pointermove", onPointerMove, { passive: false });
     document.addEventListener("pointerup", onPointerUp);
     return () => {
@@ -221,7 +200,6 @@ export default function GlobalChat() {
     };
   }, [pos.x, pos.y]);
 
-  /* ---------- starters & buttons ---------- */
   const startDrag = (e) => {
     if (e.button !== undefined && e.button !== 0) return;
     if (e.target.closest(".pw-controls")) return;
@@ -264,7 +242,7 @@ export default function GlobalChat() {
   };
 
   const toggleChat = () => {
-    if (isMobile) return; // on mobile, do nothing
+    if (isMobile) return;
     if (open) {
       draggingRef.current = false;
       resizingRef.current = false;
@@ -281,16 +259,19 @@ export default function GlobalChat() {
 
   const finalizeHide = () => {
     if (!anim) return;
-    setOpen(false); // adds .chat-hidden via class list
+    setOpen(false);
     setAnim("");
   };
+
+  useEffect(() => {
+    if (isCommission && open) setOpen(false);
+  }, [isCommission, open]);
 
   const IFRAME_SRC = "https://iframe.chat/embed?chat=97796464";
 
   return (
     <>
-      {/* FAB: hidden on mobile */}
-      {!isMobile && (
+      {!isMobile && !isCommission && (
         <button
           className="chat-fab"
           aria-label={open ? "Hide chat" : "Open chat"}
@@ -302,13 +283,12 @@ export default function GlobalChat() {
         </button>
       )}
 
-      {/* Window (always mounted; hidden via .chat-hidden when closed or on mobile) */}
       <div
         ref={wrapRef}
         className={[
           "chattable-wrapper",
           "pixel-window",
-          (!open || isMobile) ? "chat-hidden" : "", // ← hide on mobile too
+          (!open || isMobile || isCommission) ? "chat-hidden" : "",
           anim === "closing" ? "shrink-close" : "",
           anim === "minimizing" ? "shrink-min" : "",
         ].join(" ")}
