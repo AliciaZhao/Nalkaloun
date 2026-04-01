@@ -230,7 +230,7 @@ body.chat-theme{
   transform: translateZ(0);
 }
 
-.chat-hidden {
+.chat-hidden * {
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
@@ -239,4 +239,8 @@ body.chat-theme{
 
 @media (max-width: 768px) {
   .chat-fab { display: none !important; }
+}
+
+.chat-fab {
+  touch-action: none;
 }

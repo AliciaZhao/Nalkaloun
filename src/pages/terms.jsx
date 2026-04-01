@@ -3,11 +3,15 @@ import "../styles/terms.css"; // your CSS file
 
 export default function TermsOfService() {
   useEffect(() => {
-    document.documentElement.classList.add("allow-scroll");
-    document.body.classList.add("allow-scroll");
+    document.documentElement.classList.remove("landing-lock");
+    document.body.classList.remove("landing-lock");
+
+    document.documentElement.classList.add("route-scroll");
+    document.body.classList.add("route-scroll");
+
     return () => {
-      document.documentElement.classList.remove("allow-scroll");
-      document.body.classList.remove("allow-scroll");
+      document.documentElement.classList.remove("route-scroll");
+      document.body.classList.remove("route-scroll");
     };
   }, []);
 

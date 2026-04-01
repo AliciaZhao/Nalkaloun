@@ -47,10 +47,7 @@
 .portfolio-page {
   position: relative;
   min-height: 100vh;
-  height: auto !important;
-  overflow-y: auto !important;
   overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
 }
 
 html.allow-portfolio-scroll,

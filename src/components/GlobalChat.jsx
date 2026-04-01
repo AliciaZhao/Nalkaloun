@@ -2,6 +2,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "../styles/stuff.css";
+import buttonUnpressed from "../assets/Button_Unpressed.png";
 
 export default function GlobalChat() {
   const wrapRef = useRef(null);
@@ -179,7 +180,10 @@ export default function GlobalChat() {
         }
         handled = true;
       }
-      if (handled) e.preventDefault();
+      if (handled) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     };
     const onPointerUp = () => {
       if (draggingRef.current || resizingRef.current) {
@@ -279,7 +283,7 @@ export default function GlobalChat() {
           aria-pressed={open}
           onClick={toggleChat}
         >
-          <img src="https://files.catbox.moe/hglacs.png" alt="" draggable="false" />
+          <img src={buttonUnpressed} alt="" draggable="false" />
         </button>
       )}
 

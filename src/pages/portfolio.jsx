@@ -10,12 +10,16 @@ const GLOB = import.meta.glob(
 
 export default function Portfolio() {
   // ensure scroll on this page even if landing disabled it
-  useEffect(() => {
-    document.documentElement.classList.add("allow-portfolio-scroll");
-    document.body.classList.add("allow-portfolio-scroll");
+    useEffect(() => {
+    document.documentElement.classList.remove("landing-lock");
+    document.body.classList.remove("landing-lock");
+
+    document.documentElement.classList.add("route-scroll");
+    document.body.classList.add("route-scroll");
+
     return () => {
-      document.documentElement.classList.remove("allow-portfolio-scroll");
-      document.body.classList.remove("allow-portfolio-scroll");
+      document.documentElement.classList.remove("route-scroll");
+      document.body.classList.remove("route-scroll");
     };
   }, []);
 

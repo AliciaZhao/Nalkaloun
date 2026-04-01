@@ -136,10 +136,15 @@ export default function Landingpage() {
   };
 
   useEffect(() => {
+    document.documentElement.classList.add("landing-lock");
+    document.body.classList.add("landing-lock");
     if (selectedId) {
       setBrandPhase("x-shift");
       const t = setTimeout(() => setBrandPhase("x-shift y-shift"), 350);
-      return () => clearTimeout(t);
+      return () => {clearTimeout(t); 
+        document.documentElement.classList.remove("landing-lock");
+        document.body.classList.remove("landing-lock");
+      };
     } else {
       setBrandPhase("");
     }

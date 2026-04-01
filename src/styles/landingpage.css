@@ -1,11 +1,26 @@
 /* ===== Global safeties ===== */
-html, body { margin:0; padding:0; overflow-x:hidden; height: 100%; }
-@media (min-width: 641px){
-  html, body { overflow:hidden; }
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  min-height: 100%;
 }
+
+html.landing-lock,
+body.landing-lock {
+  overflow: hidden !important;
+  height: 100% !important;
+}
+
 #root { max-width:none !important; padding:0 !important; text-align:initial !important; }
 img { display:block; max-width:100%; }
 *, *::before, *::after { box-sizing:border-box; }
+
+.landing-page {
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+}
 
 /* ===== Variables ===== */
 :root{
